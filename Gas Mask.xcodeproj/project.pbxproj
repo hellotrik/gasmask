@@ -157,7 +157,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				354DDD0E114EBC9700DB76D7 /* CrashReportSender.framework in CopyFiles */,
 				3556CEA110D6B44A00C7301E /* ShortcutRecorder.framework in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1177,6 +1176,11 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/Frameworks\"",
 				);
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -1204,6 +1208,11 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Frameworks\"",
+				);
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
 				);
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;

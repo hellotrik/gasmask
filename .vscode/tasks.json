@@ -1,0 +1,28 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "id": "build-compile",
+      "label": "编译",
+      "type": "shell",
+      "icon": {
+        "id": "tools",
+        "tooltip": "编译"
+      },
+      "command": "bash ./build-arm.sh",
+      "problemMatcher": []
+    },
+    {
+      "id": "build-package",
+      "label": "打包",
+      "type": "shell",
+      "icon": {
+        "id": "rocket",
+        "tooltip": "打包"
+      },
+      "command": "bash -lc 'set -eu; DERIVED_DATA_PATH=\"${PWD}/.build\"; DIST_DIR=\"${PWD}/dist\"; mkdir -p \"$DIST_DIR\"; xcodebuild -project \"Gas Mask.xcodeproj\" -scheme \"Gas Mask\" -configuration Release -derivedDataPath \"$DERIVED_DATA_PATH\" ARCHS=\"arm64\" CODE_SIGN_IDENTITY=\"\" CODE_SIGNING_REQUIRED=NO COPY_PHASE_STRIP=NO build; APP_PATH=\"$DERIVED_DATA_PATH/Build/Products/Release/Gas Mask.app\"; test -d \"$APP_PATH\"; ditto -c -k --sequesterRsrc --keepParent \"$APP_PATH\" \"$DIST_DIR/Gas Mask-Release.zip\"; echo \"已输出: $DIST_DIR/Gas Mask-Release.zip\"'",
+      "problemMatcher": [],
+      "dependsOn": ["编译"]
+    }
+  ]
+}

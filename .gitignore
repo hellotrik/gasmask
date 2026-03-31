@@ -1,2 +1,5 @@
 xcuserdata
 build
+.build
+dist
+.DS_Store
