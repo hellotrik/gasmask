@@ -23,6 +23,7 @@
 #import "ApplicationController.h"
 #import "RemoteHostsController.h"
 #import "Pair.h"
+#import "EnvMaskController.h"
 
 @interface HostsMenu (Private)
 - (void)createItems;
@@ -118,6 +119,12 @@
 	
 	ApplicationController *controller = [ApplicationController defaultInstance];
 	NSMenuItem *item;
+
+	// Env Mask (environment variable layers)
+	NSMenuItem *envItem = [[NSMenuItem alloc] initWithTitle:@"Env Mask" action:NULL keyEquivalent:@""];
+	[envItem setSubmenu:[[EnvMaskController defaultInstance] createEnvMaskSubmenu]];
+	[self addItem:envItem];
+	[self addItem:[NSMenuItem separatorItem]];
 	
 	if ([controller editorWindowOpened]) {
 		item = [[NSMenuItem alloc] initWithTitle:@"Close Editor Window" action:NULL keyEquivalent:@""];

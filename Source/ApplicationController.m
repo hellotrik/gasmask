@@ -27,6 +27,10 @@
 #import "LocalHostsController.h"
 #import "RemoteHostsController.h"
 #import "NotificationHelper.h"
+#import "EnvMaskController.h"
+#import "EnvStore.h"
+#import "EnvResolver.h"
+#import "EnvExporter.h"
 
 @interface ApplicationController(Private)
 - (void)initStructure;
@@ -171,6 +175,12 @@ static ApplicationController *sharedInstance = nil;
 	[NSApp setServicesProvider:self];
 	
 	[self initStructure];
+
+	// Initialize EnvMask early so shell export exists even before opening menus.
+	[EnvMaskController defaultInstance];
+	NSArray<EnvLayer *> *envLayers = [[EnvStore defaultInstance] loadLayers];
+	NSDictionary<NSString *, NSString *> *resolvedEnv = [EnvResolver resolveFromLayers:envLayers];
+	[EnvExporter writeActiveZshFromEnv:resolvedEnv error:NULL];
 	
 	NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
 	[nc addObserver:self selector:@selector(increaseBusyThreadsCount:) name:ThreadBusyNotification object:nil];
