@@ -19,6 +19,7 @@
  ***************************************************************************/
 
 #import "Network.h"
+#import "Logger.h"
 
 BOOL _openedAtLogin = NO;
 BOOL _reopened = NO;
@@ -38,18 +39,18 @@ int main(int argc, char *argv[])
 	@autoreleasepool {
         [Logger setup];
 	
-        logDebug(@"Starting Gas Mask %@", [NSApplication version]);
+        [Logger debug:[NSString stringWithFormat:@"Starting Gas Mask %@", [NSApplication version]] method:__PRETTY_FUNCTION__];
 
         [[Network defaultInstance] startListeningForChanges];
 	
         for (int i=0; i<argc; i++) {
             if (strcmp(argv[i], "openatlogin") == 0) {
                 _openedAtLogin = YES;
-                logDebug(@"Opened At Login");
+                [Logger debug:@"Opened At Login" method:__PRETTY_FUNCTION__];
             }
             else if (strcmp(argv[i], "#reopen#") == 0) {
                 _reopened = YES;
-                logDebug(@"Reopen");
+                [Logger debug:@"Reopen" method:__PRETTY_FUNCTION__];
             }
         }
 	}

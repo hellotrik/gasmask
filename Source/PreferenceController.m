@@ -18,8 +18,6 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#import <ShortcutRecorder/SRRecorderControl.h>
-
 #import "PreferenceController.h"
 #import "Preferences.h"
 #import "Preferences+Remote.h"
@@ -27,11 +25,18 @@
 #import "Hotkey.h"
 #import "Util.h"
 
+#import <ShortcutRecorder/ShortcutRecorder.h>
+
 #define TOOLBAR_GENERAL @"TOOLBAR_GENERAL"
 #define TOOLBAR_EDITOR @"TOOLBAR_EDITOR"
 #define TOOLBAR_REMOTE @"TOOLBAR_REMOTE"
 #define TOOLBAR_HOTKEYS @"TOOLBAR_HOTKEYS"
-#define TOOLBAR_UPDATE @"TOOLBAR_UPDATE"
+
+@interface PreferenceController ()
+@property (nonatomic, strong) SRRecorderControl *activatePreviousRecorder;
+@property (nonatomic, strong) SRRecorderControl *activateNextRecorder;
+@property (nonatomic, strong) SRRecorderControl *updateRecorder;
+@end
 
 @interface PreferenceController (Remote)
 - (void)initRemote;
@@ -95,7 +100,6 @@
 									  TOOLBAR_EDITOR,
 									  TOOLBAR_REMOTE,
 									  TOOLBAR_HOTKEYS,
-									  TOOLBAR_UPDATE,
 									  nil];
 }
 
@@ -119,10 +123,6 @@
 		[item setLabel: @"Hotkeys"];
 		[item setImage: [NSImage imageNamed: @"Hotkeys.png"]];
 	}
-	else if ([ident isEqualTo:TOOLBAR_UPDATE]) {
-		[item setLabel: @"Update"];
-		[item setImage: [NSImage imageNamed: @"Update.png"]];
-	}
 	[item setTarget: self];
 	[item setAction: @selector(setPreferenceView:)];
 	[item setAutovalidates: NO];
@@ -142,9 +142,6 @@
 	}
 	else if ([identifier isEqualToString:TOOLBAR_HOTKEYS]) {
 		view = hotkeysView;
-	}
-	else if ([identifier isEqualToString:TOOLBAR_UPDATE]) {
-		view = updateView;
 	}
 	
 	NSWindow * window = [self window];
@@ -229,23 +226,56 @@
 
 - (void)initHotkeys
 {
+    self.activatePreviousRecorder = [SRRecorderControl new];
+    self.activateNextRecorder = [SRRecorderControl new];
+    self.updateRecorder = [SRRecorderControl new];
+    
+    self.activatePreviousRecorder.delegate = (id<SRRecorderControlDelegate>)self;
+    self.activateNextRecorder.delegate = (id<SRRecorderControlDelegate>)self;
+    self.updateRecorder.delegate = (id<SRRecorderControlDelegate>)self;
+    
+    self.activatePreviousRecorder.frame = activatePreviousHotkey.bounds;
+    self.activateNextRecorder.frame = activateNextHotkey.bounds;
+    self.updateRecorder.frame = updateHotkey.bounds;
+    
+    self.activatePreviousRecorder.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
+    self.activateNextRecorder.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
+    self.updateRecorder.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
+    
+    [activatePreviousHotkey addSubview:self.activatePreviousRecorder];
+    [activateNextHotkey addSubview:self.activateNextRecorder];
+    [updateHotkey addSubview:self.updateRecorder];
+    
 	id plist = [[[Preferences instance] defaults] valueForKey:ActivatePreviousFilePrefKey];
 	Hotkey *hotkey = [[Hotkey alloc] initWithPlistRepresentation:plist];
-	[activatePreviousHotkey setKeyCombo:SRMakeKeyCombo([hotkey keyCode], [activatePreviousHotkey carbonToCocoaFlags:[hotkey modifiers]])];
+    self.activatePreviousRecorder.dictionaryValue = @{
+        SRShortcutKeyKeyCode: @([hotkey keyCode]),
+        SRShortcutKeyModifierFlags: @(SRCarbonToCocoaFlags([hotkey modifiers])),
+    };
 	
 	plist = [[[Preferences instance] defaults] valueForKey:ActivateNextFilePrefKey];
 	hotkey = [[Hotkey alloc] initWithPlistRepresentation:plist];
-	[activateNextHotkey setKeyCombo:SRMakeKeyCombo([hotkey keyCode], [activateNextHotkey carbonToCocoaFlags:[hotkey modifiers]])];
+    self.activateNextRecorder.dictionaryValue = @{
+        SRShortcutKeyKeyCode: @([hotkey keyCode]),
+        SRShortcutKeyModifierFlags: @(SRCarbonToCocoaFlags([hotkey modifiers])),
+    };
 	
 	plist = [[[Preferences instance] defaults] valueForKey:UpdateAndSynchronizePrefKey];
 	hotkey = [[Hotkey alloc] initWithPlistRepresentation:plist];
-	[updateHotkey setKeyCombo:SRMakeKeyCombo([hotkey keyCode], [activateNextHotkey carbonToCocoaFlags:[hotkey modifiers]])];
+    self.updateRecorder.dictionaryValue = @{
+        SRShortcutKeyKeyCode: @([hotkey keyCode]),
+        SRShortcutKeyModifierFlags: @(SRCarbonToCocoaFlags([hotkey modifiers])),
+    };
 }
 
-- (void)shortcutRecorder:(SRRecorderControl *)aRecorder keyComboDidChange:(KeyCombo)newKeyCombo
+- (void)recorderControlDidEndRecording:(SRRecorderControl *)aRecorder
 {
-	Hotkey *hotkey = [[Hotkey alloc] initWithKeyCode:[aRecorder keyCombo].code
-										   modifiers:[aRecorder cocoaToCarbonFlags:[aRecorder keyCombo].flags]];
+    NSDictionary<SRShortcutKey, id> *shortcut = aRecorder.dictionaryValue;
+    NSNumber *keyCode = shortcut[SRShortcutKeyKeyCode];
+    NSNumber *modifierFlags = shortcut[SRShortcutKeyModifierFlags];
+    
+	Hotkey *hotkey = [[Hotkey alloc] initWithKeyCode:[keyCode intValue]
+										   modifiers:SRCocoaToCarbonFlags([modifierFlags unsignedIntegerValue])];
 	NSString *prefKey;
 	if (aRecorder == activatePreviousHotkey) {
 		prefKey = ActivatePreviousFilePrefKey;

@@ -18,12 +18,13 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-@class SRRecorderControl;
+#import <Cocoa/Cocoa.h>
+
 @class LoginItem;
 
 @interface PreferenceController : NSWindowController<NSToolbarDelegate> {
 	@private
-	IBOutlet NSView *generalView, *editorView, *hotkeysView, *updateView, *remoteView;
+	IBOutlet NSView *generalView, *editorView, *hotkeysView, *remoteView;
     LoginItem *loginItem;
 	
     __unsafe_unretained IBOutlet NSButton *showHostFileNameButton;
@@ -33,7 +34,7 @@
 	NSDictionary *remoteIntervals;
 	
 	// Hotkeys
-	IBOutlet SRRecorderControl *activatePreviousHotkey, *activateNextHotkey, *updateHotkey;
+	IBOutlet NSView *activatePreviousHotkey, *activateNextHotkey, *updateHotkey;
 }
 
 - (void) setPreferenceView:(id)sender;
