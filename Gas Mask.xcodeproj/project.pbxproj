@@ -133,7 +133,7 @@
 		35E9008A1147F42900851A25 /* MAAttachedWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 35E900891147F42900851A25 /* MAAttachedWindow.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		35F414F4152E1B7800B99583 /* VDKQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 35F414F3152E1B7800B99583 /* VDKQueue.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		35FBCA3B1223172300860FDA /* RegexKitLite.m in Sources */ = {isa = PBXBuildFile; fileRef = 35FBCA3A1223172300860FDA /* RegexKitLite.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		35FBCA511223181000860FDA /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 35FBCA501223181000860FDA /* libicucore.dylib */; };
+		35FBCA511223181000860FDA /* libicucore.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 35FBCA501223181000860FDA /* libicucore.tbd */; };
 		36E0AA0C9B7C4D2A8A0B1001 /* EnvLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 36E0AB0B9B7C4D2A8A0B1001 /* EnvLayer.m */; };
 		36E0AA0E9B7C4D2A8A0B1001 /* EnvResolver.m in Sources */ = {isa = PBXBuildFile; fileRef = 36E0AB0D9B7C4D2A8A0B1001 /* EnvResolver.m */; };
 		36E0AA109B7C4D2A8A0B1001 /* EnvStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 36E0AB0F9B7C4D2A8A0B1001 /* EnvStore.m */; };
@@ -370,7 +370,7 @@
 		35F414F3152E1B7800B99583 /* VDKQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VDKQueue.m; path = "Source/3rd Party/VDKQueue.m"; sourceTree = "<group>"; };
 		35FBCA391223172300860FDA /* RegexKitLite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RegexKitLite.h; path = "Source/3rd Party/RegexKitLite.h"; sourceTree = "<group>"; };
 		35FBCA3A1223172300860FDA /* RegexKitLite.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RegexKitLite.m; path = "Source/3rd Party/RegexKitLite.m"; sourceTree = "<group>"; };
-		35FBCA501223181000860FDA /* libicucore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.dylib; path = usr/lib/libicucore.dylib; sourceTree = SDKROOT; };
+		35FBCA501223181000860FDA /* libicucore.tbd */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.text-based-dylib-definition; name = libicucore.tbd; path = usr/lib/libicucore.tbd; sourceTree = SDKROOT; };
 		35FC65991114B12600BD18C3 /* launcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = launcher.m; path = Source/launcher.m; sourceTree = "<group>"; };
 		35FC65A71114B29A00BD18C3 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		36E0AB0A9B7C4D2A8A0B1001 /* EnvLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EnvLayer.h; path = Source/Env/EnvLayer.h; sourceTree = "<group>"; };
@@ -418,7 +418,7 @@
 				354E7F8110AEFBC500FC4757 /* Security.framework in Frameworks */,
 				3545DCE410E3997200EBA66D /* SystemConfiguration.framework in Frameworks */,
 				35C8D5A911144F7000B4242D /* Carbon.framework in Frameworks */,
-				35FBCA511223181000860FDA /* libicucore.dylib in Frameworks */,
+				35FBCA511223181000860FDA /* libicucore.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -492,7 +492,7 @@
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
 				35FC65A71114B29A00BD18C3 /* Cocoa.framework */,
-				35FBCA501223181000860FDA /* libicucore.dylib */,
+				35FBCA501223181000860FDA /* libicucore.tbd */,
 			);
 			name = "Gas Mask";
 			sourceTree = "<group>";
