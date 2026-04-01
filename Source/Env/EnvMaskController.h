@@ -24,7 +24,6 @@
 - (void)exportActiveZsh:(id)sender;
 - (void)copySourceCommand:(id)sender;
 - (void)openActiveZsh:(id)sender;
-- (void)openEnvEditor:(id)sender;
 
 @end
 

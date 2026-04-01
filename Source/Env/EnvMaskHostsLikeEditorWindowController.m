@@ -7,31 +7,32 @@
 #import "EnvStore.h"
 #import "EnvResolver.h"
 #import "EnvExporter.h"
-#import "EnvTreeItem.h"
 #import "EnvOpsTextFormat.h"
 
-@interface EnvMaskHostsLikeEditorWindowController () <NSOutlineViewDataSource, NSOutlineViewDelegate, NSTextFieldDelegate, NSTextViewDelegate>
+static NSString *const kEnvTBCreate = @"com.gasmask.env.toolbar.create";
+static NSString *const kEnvTBRemove = @"com.gasmask.env.toolbar.remove";
+static NSString *const kEnvTBSave = @"com.gasmask.env.toolbar.save";
+static NSString *const kEnvTBActivate = @"com.gasmask.env.toolbar.activate";
+static NSString *const kEnvTBTerminal = @"com.gasmask.env.toolbar.terminal";
+
+// 与 Editor.xib / EditorController 中 Gas Mask 主窗口分割条一致
+#define kEnvSplitMinWidth 140.0
+#define kEnvSplitMaxWidth 300.0
+#define kEnvSplitDefaultWidth 160.0
+
+@interface EnvMaskHostsLikeEditorWindowController () <NSToolbarDelegate, NSSplitViewDelegate, NSTableViewDataSource, NSTableViewDelegate, NSTextViewDelegate>
 
 @property (nonatomic) NSSplitView *splitView;
+@property (nonatomic) NSTextField *statusTextField;
 
-@property (nonatomic) NSOutlineView *sourceList;
-@property (nonatomic) EnvTreeItem *rootItem;
+/// 扁平列表：Temp 固定第一行，其余 Profile 按 priority/名称排序（与 Gas Mask 侧栏类似的单层列表，无树）。
+@property (nonatomic) NSTableView *sourceList;
+@property (nonatomic) NSArray<EnvLayer *> *flatLayers;
 
 @property (nonatomic) NSTextView *opsTextView;
-@property (nonatomic) NSTextView *previewText;
-
-@property (nonatomic) NSButton *enabledCheckbox;
-@property (nonatomic) NSTextField *priorityField;
-@property (nonatomic) NSTextField *nameField;
 
 @property (nonatomic) NSView *rightEditorView;
 @property (nonatomic) NSScrollView *opsScrollView;
-@property (nonatomic) NSScrollView *previewScrollView;
-@property (nonatomic) NSButton *createBtn;
-@property (nonatomic) NSButton *removeBtn;
-@property (nonatomic) NSButton *enableBtn;
-@property (nonatomic) NSButton *applyBtn;
-@property (nonatomic) NSButton *saveOpsBtn;
 
 @property (nonatomic) NSArray<EnvLayer *> *layers;
 @property (nonatomic) EnvLayer *selectedLayer;
@@ -56,13 +57,6 @@ static EnvMaskHostsLikeEditorWindowController *sharedInstance = nil;
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (NSButton *)buttonWithTitle:(NSString *)title action:(SEL)action
-{
-	NSButton *btn = [NSButton buttonWithTitle:title target:self action:action];
-	[btn setBezelStyle:NSBezelStyleRounded];
-	return btn;
-}
-
 - (NSScrollView *)scrollViewWithView:(NSView *)view
 {
 	NSScrollView *sv = [[NSScrollView alloc] initWithFrame:NSMakeRect(0, 0, 100, 100)];
@@ -72,75 +66,52 @@ static EnvMaskHostsLikeEditorWindowController *sharedInstance = nil;
 	return sv;
 }
 
-- (NSTextView *)newReadonlyTextView
-{
-	NSTextView *tv = [[NSTextView alloc] initWithFrame:NSMakeRect(0, 0, 100, 100)];
-	[tv setEditable:NO];
-	[tv setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
-	return tv;
-}
-
-/// 预览固定高度贴底，变量编辑区填满中间，避免两者同时 HeightSizable 导致重叠、预览盖住 ops 无法点击输入。
+/// 右侧与 Editor.xib 中 Hosts 文本区一致：整 pane 仅主编辑区（名称/优先级/启用在左侧列表与工具栏 Activate 中编辑）。
 - (void)layoutRightEditorSubviews
 {
 	NSView *right = self.rightEditorView;
 	if (!right) return;
-
-	const CGFloat margin = 12.0;
-	const CGFloat previewHDefault = 160.0;
-	const CGFloat gapPO = 8.0;
-	const CGFloat gapOH = 8.0;
-	const CGFloat gapHT = 12.0;
-	const CGFloat toolbarH = 28.0;
-	const CGFloat headerH = 24.0;
-	const CGFloat topMargin = 8.0;
-	const CGFloat minOpsH = 80.0;
-	const CGFloat minPreviewH = 80.0;
-
-	CGFloat W = NSWidth(right.bounds);
-	CGFloat H = NSHeight(right.bounds);
-	CGFloat innerW = MAX(0.0, W - 2.0 * margin);
-
-	CGFloat topBlock = topMargin + toolbarH + gapHT + headerH + gapOH;
-	CGFloat previewH = previewHDefault;
-	CGFloat bottomBlock = margin + previewH + gapPO;
-	CGFloat opsH = H - topBlock - bottomBlock;
-	if (opsH < minOpsH) {
-		CGFloat shortfall = minOpsH - opsH;
-		previewH = MAX(minPreviewH, previewH - shortfall);
-		bottomBlock = margin + previewH + gapPO;
-		opsH = H - topBlock - bottomBlock;
-	}
-
-	CGFloat toolbarBottomY = H - topMargin - toolbarH;
-	CGFloat headerTopY = toolbarBottomY - gapHT;
-	CGFloat headerBottomY = headerTopY - headerH;
-	CGFloat opsBottomY = margin + previewH + gapPO;
-
-	[self.createBtn setFrame:NSMakeRect(margin, toolbarBottomY, 110, toolbarH)];
-	[self.removeBtn setFrame:NSMakeRect(128, toolbarBottomY, 110, toolbarH)];
-	[self.enableBtn setFrame:NSMakeRect(244, toolbarBottomY, 140, toolbarH)];
-	[self.applyBtn setFrame:NSMakeRect(390, toolbarBottomY, 160, toolbarH)];
-	[self.saveOpsBtn setFrame:NSMakeRect(556, toolbarBottomY, 100, toolbarH)];
-
-	[self.enabledCheckbox setFrame:NSMakeRect(12, headerBottomY, 90, headerH)];
-	[self.priorityField setFrame:NSMakeRect(110, headerBottomY, 70, headerH)];
-	[self.nameField setFrame:NSMakeRect(190, headerBottomY, MAX(80.0, W - margin - 190.0), headerH)];
-
-	[self.previewScrollView setFrame:NSMakeRect(margin, margin, innerW, previewH)];
-	[self.opsScrollView setFrame:NSMakeRect(margin, opsBottomY, innerW, opsH)];
+	[self.opsScrollView setFrame:right.bounds];
 	[self syncOpsTextViewGeometryToScrollView];
 }
 
+/// 对齐 Editor.xib：底栏状态行 + 上方为分割条区域（EditorController 用 contentBorderThickness 画底边）。
+- (void)layoutEnvMaskWindowChrome
+{
+	NSWindow *w = self.window;
+	NSView *cv = w.contentView;
+	if (!cv || !self.splitView || !self.statusTextField) return;
+
+	const CGFloat statusH = 18.0;
+	NSRect b = cv.bounds;
+	[self.statusTextField setFrame:NSMakeRect(0, 0, b.size.width, statusH)];
+	[self.splitView setFrame:NSMakeRect(0, statusH, b.size.width, b.size.height - statusH)];
+	[w setContentBorderThickness:statusH forEdge:NSMinYEdge];
+}
+
 /// 将 ops 文档视图铺满可视区（至少与 clip 同高），否则下方空白不属于 NSTextView，点击无法成为第一响应者、无法输入（含中文 IME）。
+/// 注意：首帧或 split 未布局完时 sv.contentSize 可能为 0，需用 contentView.bounds.size 兜底（否则 sync 空跑，文档视图保持默认小尺寸）。
 - (void)syncOpsTextViewGeometryToScrollView
 {
 	NSScrollView *sv = self.opsScrollView;
 	NSTextView *tv = self.opsTextView;
 	if (!sv || !tv) return;
 
+	NSWindow *win = sv.window;
+	if (win && win.contentView) {
+		[win.contentView layoutSubtreeIfNeeded];
+	}
+	[sv layoutSubtreeIfNeeded];
+	NSClipView *clip = sv.contentView;
+	[clip layoutSubtreeIfNeeded];
+
 	NSSize contentSize = sv.contentSize;
-	if (contentSize.width < 1.0 || contentSize.height < 1.0) return;
+	if (contentSize.width < 1.0 || contentSize.height < 1.0) {
+		contentSize = clip.bounds.size;
+	}
+	if (contentSize.width < 1.0 || contentSize.height < 1.0) {
+		return;
+	}
 
 	[tv setHorizontallyResizable:NO];
 	[tv setVerticallyResizable:YES];
@@ -185,6 +156,7 @@ static EnvMaskHostsLikeEditorWindowController *sharedInstance = nil;
 	if (!self.selectedLayer) {
 		self.opsTextView.string = @"";
 		self.opsTextDirty = NO;
+		[self syncOpsTextViewGeometryToScrollView];
 		return;
 	}
 	self.opsTextView.string = [EnvOpsTextFormat textFromOps:(self.selectedLayer.ops ?: @[])];
@@ -206,10 +178,9 @@ static EnvMaskHostsLikeEditorWindowController *sharedInstance = nil;
 
 	NSArray<EnvVarOp *> *ops = [EnvOpsTextFormat opsFromText:self.opsTextView.string];
 	EnvLayer *l = self.selectedLayer;
-	NSInteger p = [self.priorityField.stringValue integerValue];
-	NSString *name = [[self.nameField stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-	if ([name length] == 0) name = l.name ?: @"";
-	BOOL en = (self.enabledCheckbox.state == NSOnState);
+	NSInteger p = l.priority;
+	NSString *name = l.name ?: @"";
+	BOOL en = l.enabled;
 	EnvLayer *nl = [EnvLayer layerWithId:l.layerId name:name enabled:en priority:p ops:ops];
 
 	NSMutableArray *layers = [self.layers mutableCopy];
@@ -228,53 +199,53 @@ static EnvMaskHostsLikeEditorWindowController *sharedInstance = nil;
 	[self commitOpsTextForCurrentLayerIfDirty];
 }
 
-- (EnvTreeItem *)buildTreeFromLayers:(NSArray<EnvLayer *> *)layers
+/// Temp 固定第一行，其余为 Profile；不含 base（内部层）。
+- (NSArray<EnvLayer *> *)buildFlatRowsFromLayers:(NSArray<EnvLayer *> *)layers
 {
-	NSMutableArray<EnvTreeItem *> *profileLeaves = [NSMutableArray array];
+	NSMutableArray<EnvLayer *> *profiles = [NSMutableArray array];
 	EnvLayer *tempLayer = nil;
-
-	NSArray<EnvLayer *> *sorted = [layers sortedArrayUsingComparator:^NSComparisonResult(EnvLayer *a, EnvLayer *b) {
-		if (a.priority < b.priority) return NSOrderedAscending;
-		if (a.priority > b.priority) return NSOrderedDescending;
-		return [a.name compare:b.name options:NSCaseInsensitiveSearch];
-	}];
-
-	for (EnvLayer *l in sorted) {
+	for (EnvLayer *l in layers) {
+		if ([l.layerId isEqualToString:@"base"]) continue;
 		if ([l.layerId isEqualToString:@"temp"]) {
 			tempLayer = l;
 			continue;
 		}
-		// Hide base from source list (internal), but keep it for resolution.
-		if ([l.layerId isEqualToString:@"base"]) {
-			continue;
-		}
-		[profileLeaves addObject:[EnvTreeItem leafWithLayer:l]];
+		[profiles addObject:l];
 	}
+	[profiles sortUsingComparator:^NSComparisonResult(EnvLayer *a, EnvLayer *b) {
+		if (a.priority < b.priority) return NSOrderedAscending;
+		if (a.priority > b.priority) return NSOrderedDescending;
+		return [a.name compare:b.name options:NSCaseInsensitiveSearch];
+	}];
+	NSMutableArray<EnvLayer *> *out = [NSMutableArray array];
+	if (tempLayer) [out addObject:tempLayer];
+	[out addObjectsFromArray:profiles];
+	return [out copy];
+}
 
-	EnvTreeItem *profiles = [EnvTreeItem groupWithTitle:@"Profiles" children:profileLeaves];
-	EnvTreeItem *temp = nil;
-	if (tempLayer) {
-		temp = [EnvTreeItem groupWithTitle:@"Temp" children:@[[EnvTreeItem leafWithLayer:tempLayer]]];
-	} else {
-		temp = [EnvTreeItem groupWithTitle:@"Temp" children:@[]];
+- (NSInteger)rowIndexForLayerId:(NSString *)layerId
+{
+	if (!layerId) return -1;
+	NSUInteger n = self.flatLayers.count;
+	for (NSUInteger i = 0; i < n; i++) {
+		if ([self.flatLayers[i].layerId isEqualToString:layerId]) return (NSInteger)i;
 	}
-
-	return [EnvTreeItem groupWithTitle:@"ROOT" children:@[profiles, temp]];
+	return -1;
 }
 
 - (void)reloadFromStore
 {
 	self.layers = [[EnvStore defaultInstance] ensureTempLayerExists];
-	self.rootItem = [self buildTreeFromLayers:self.layers];
+	self.flatLayers = [self buildFlatRowsFromLayers:self.layers];
 	[self.sourceList reloadData];
 
-	// select first profile if nothing selected
-	if (!self.selectedLayer) {
-		EnvTreeItem *profiles = self.rootItem.children.firstObject;
-		EnvTreeItem *firstLeaf = profiles.children.firstObject;
-		if (firstLeaf.layer) {
-			[self selectLayer:firstLeaf.layer];
+	if (!self.selectedLayer && self.flatLayers.count > 0) {
+		NSUInteger row = 0;
+		if (self.flatLayers.count > 1 && [self.flatLayers[0].layerId isEqualToString:@"temp"]) {
+			row = 1;
 		}
+		[self.sourceList selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
+		[self selectLayer:self.flatLayers[row]];
 	}
 
 	[self refreshPreview:nil];
@@ -283,9 +254,6 @@ static EnvMaskHostsLikeEditorWindowController *sharedInstance = nil;
 - (void)selectLayer:(EnvLayer *)layer
 {
 	self.selectedLayer = layer;
-	[self.enabledCheckbox setState:(layer.enabled ? NSOnState : NSOffState)];
-	[self.priorityField setStringValue:[NSString stringWithFormat:@"%ld", (long)layer.priority]];
-	[self.nameField setStringValue:(layer.name ?: @"")];
 	[self loadOpsTextForSelectedLayer];
 	[self refreshPreview:nil];
 }
@@ -300,18 +268,29 @@ static EnvMaskHostsLikeEditorWindowController *sharedInstance = nil;
 
 - (void)persistLayers:(NSArray<EnvLayer *> *)layers
 {
+	NSResponder *frBefore = self.window.firstResponder;
+	BOOL opsWasFirst = (frBefore == self.opsTextView);
+
 	[[EnvStore defaultInstance] saveLayers:layers error:NULL];
 	self.layers = layers;
-	self.rootItem = [self buildTreeFromLayers:layers];
+	self.flatLayers = [self buildFlatRowsFromLayers:layers];
 	[self.sourceList reloadData];
 
 	if (self.selectedLayer) {
 		EnvLayer *updatedSelected = [self layerById:self.selectedLayer.layerId];
 		if (updatedSelected) {
+			NSInteger r = [self rowIndexForLayerId:updatedSelected.layerId];
+			if (r >= 0) {
+				[self.sourceList selectRowIndexes:[NSIndexSet indexSetWithIndex:(NSUInteger)r] byExtendingSelection:NO];
+			}
 			[self selectLayer:updatedSelected];
 		}
 	}
 	[self refreshPreview:nil];
+
+	if (opsWasFirst && self.window) {
+		[self.window makeFirstResponder:self.opsTextView];
+	}
 }
 
 #pragma mark - Window
@@ -320,117 +299,96 @@ static EnvMaskHostsLikeEditorWindowController *sharedInstance = nil;
 {
 	if (self.window) return;
 
-	NSWindow *w = [[NSWindow alloc] initWithContentRect:NSMakeRect(0, 0, 980, 620)
-											 styleMask:(NSWindowStyleMaskTitled | NSWindowStyleMaskClosable | NSWindowStyleMaskResizable)
+	NSWindow *w = [[NSWindow alloc] initWithContentRect:NSMakeRect(0, 0, 800, 520)
+											 styleMask:(NSWindowStyleMaskTitled | NSWindowStyleMaskClosable | NSWindowStyleMaskMiniaturizable | NSWindowStyleMaskResizable)
 											   backing:NSBackingStoreBuffered
 												 defer:NO];
-	[w setTitle:@"EnvMask（仿 Gas Mask）"];
+	[w setTitle:@"EnvMask"];
+	[w setMinSize:NSMakeSize(400, 400)];
+	[w setFrameAutosaveName:@"envmask_editor_window"];
 	[self setWindow:w];
 
-	self.splitView = [[NSSplitView alloc] initWithFrame:w.contentView.bounds];
+	NSToolbar *tb = [[NSToolbar alloc] initWithIdentifier:@"com.gasmask.env.toolbar"];
+	[tb setDelegate:self];
+	[tb setAllowsUserCustomization:NO];
+	[tb setDisplayMode:NSToolbarDisplayModeIconAndLabel];
+	[tb setSizeMode:NSToolbarSizeModeRegular];
+	[w setToolbar:tb];
+
+	self.statusTextField = [[NSTextField alloc] initWithFrame:NSZeroRect];
+	[self.statusTextField setBezeled:NO];
+	[self.statusTextField setDrawsBackground:NO];
+	[self.statusTextField setEditable:NO];
+	[self.statusTextField setSelectable:NO];
+	[self.statusTextField setAlignment:NSTextAlignmentCenter];
+	[self.statusTextField setFont:[NSFont systemFontOfSize:11]];
+	[self.statusTextField setAutoresizingMask:NSViewWidthSizable | NSViewMaxYMargin];
+
+	CGRect cvb = w.contentView.bounds;
+	const CGFloat statusH = 18.0;
+	self.splitView = [[NSSplitView alloc] initWithFrame:NSMakeRect(0, statusH, cvb.size.width, cvb.size.height - statusH)];
 	[self.splitView setVertical:YES];
+	[self.splitView setDividerStyle:NSSplitViewDividerStyleThin];
+	[self.splitView setDelegate:self];
 	[self.splitView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
 	[w.contentView addSubview:self.splitView];
 
-	// Left: SourceList outline
-	self.sourceList = [[NSOutlineView alloc] initWithFrame:NSMakeRect(0, 0, 240, 620)];
-	NSTableColumn *col = [[NSTableColumn alloc] initWithIdentifier:@"name"];
-	[col setTitle:@"Env"];
-	[col setWidth:240];
-	[self.sourceList addTableColumn:col];
-	[self.sourceList setOutlineTableColumn:col];
+	self.sourceList = [[NSTableView alloc] initWithFrame:NSMakeRect(0, 0, kEnvSplitDefaultWidth, 400)];
+	NSTableColumn *nameCol = [[NSTableColumn alloc] initWithIdentifier:@"name"];
+	[nameCol setWidth:118];
+	[nameCol setMinWidth:60];
+	[[nameCol dataCell] setEditable:YES];
+	NSTableColumn *prioCol = [[NSTableColumn alloc] initWithIdentifier:@"prio"];
+	[prioCol setWidth:36];
+	[prioCol setMinWidth:28];
+	[[prioCol dataCell] setEditable:YES];
+	[self.sourceList addTableColumn:nameCol];
+	[self.sourceList addTableColumn:prioCol];
 	[self.sourceList setHeaderView:nil];
 	[self.sourceList setRowHeight:20.0];
+	[self.sourceList setUsesAlternatingRowBackgroundColors:NO];
 	[self.sourceList setSelectionHighlightStyle:NSTableViewSelectionHighlightStyleSourceList];
 	[self.sourceList setDelegate:self];
 	[self.sourceList setDataSource:self];
+	[self.sourceList setFocusRingType:NSFocusRingTypeNone];
 
 	NSScrollView *leftSv = [self scrollViewWithView:self.sourceList];
-	[leftSv setFrame:NSMakeRect(0, 0, 240, 620)];
+	[leftSv setFocusRingType:NSFocusRingTypeNone];
+	[leftSv setFrame:NSMakeRect(0, 0, kEnvSplitDefaultWidth, cvb.size.height - statusH)];
 	[self.splitView addSubview:leftSv];
 
-	// Right: editor（子视图由 layoutRightEditorSubviews 布局，避免预览与 ops 重叠抢点击）
-	NSView *right = [[NSView alloc] initWithFrame:NSMakeRect(0, 0, 740, 620)];
+	NSView *right = [[NSView alloc] initWithFrame:NSMakeRect(kEnvSplitDefaultWidth + [self.splitView dividerThickness], 0, 600, cvb.size.height - statusH)];
 	[right setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
 	self.rightEditorView = right;
 	[right setPostsFrameChangedNotifications:YES];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(layoutRightEditorSubviews) name:NSViewFrameDidChangeNotification object:right];
 
-	// Toolbar-like buttons row
-	self.createBtn = [self buttonWithTitle:@"Create(+)" action:@selector(createProfile:)];
-	[right addSubview:self.createBtn];
-
-	self.removeBtn = [self buttonWithTitle:@"Remove" action:@selector(removeSelected:)];
-	[right addSubview:self.removeBtn];
-
-	self.enableBtn = [self buttonWithTitle:@"Enable/Disable" action:@selector(toggleEnableSelected:)];
-	[right addSubview:self.enableBtn];
-
-	self.applyBtn = [self buttonWithTitle:@"ApplyToTerminal" action:@selector(toggleTerminalAutoApply:)];
-	[right addSubview:self.applyBtn];
-
-	self.saveOpsBtn = [self buttonWithTitle:@"保存编辑" action:@selector(saveOpsText:)];
-	[right addSubview:self.saveOpsBtn];
-
-	// Header fields
-	self.enabledCheckbox = [[NSButton alloc] initWithFrame:NSMakeRect(12, 548, 90, 24)];
-	[self.enabledCheckbox setButtonType:NSSwitchButton];
-	[self.enabledCheckbox setTitle:@"启用"];
-	[self.enabledCheckbox setTarget:self];
-	[self.enabledCheckbox setAction:@selector(setSelectedEnabledFromCheckbox:)];
-	[right addSubview:self.enabledCheckbox];
-
-	self.priorityField = [[NSTextField alloc] initWithFrame:NSMakeRect(110, 548, 70, 24)];
-	[self.priorityField setPlaceholderString:@"prio"];
-	[self.priorityField setEditable:YES];
-	[self.priorityField setSelectable:YES];
-	[self.priorityField setEnabled:YES];
-	self.priorityField.delegate = self;
-	[self.priorityField setTarget:self];
-	[self.priorityField setAction:@selector(updateSelectedPriority:)];
-	[right addSubview:self.priorityField];
-
-	self.nameField = [[NSTextField alloc] initWithFrame:NSMakeRect(190, 548, 260, 24)];
-	[self.nameField setPlaceholderString:@"显示名称"];
-	[self.nameField setEditable:YES];
-	[self.nameField setSelectable:YES];
-	[self.nameField setEnabled:YES];
-	self.nameField.delegate = self;
-	[self.nameField setTarget:self];
-	[self.nameField setAction:@selector(updateSelectedName:)];
-	[right addSubview:self.nameField];
-
-	// Preview 先加、变量编辑后加，保证 ops 在上层（即使曾重叠也能点到）
-	self.previewText = [self newReadonlyTextView];
-	self.previewScrollView = [self scrollViewWithView:self.previewText];
-	[self.previewScrollView setBorderType:NSBezelBorder];
-	[right addSubview:self.previewScrollView];
-
 	self.opsTextView = [self newEditableOpsTextView];
 	self.opsScrollView = [self scrollViewWithView:self.opsTextView];
-	[self.opsScrollView setBorderType:NSBezelBorder];
+	[self.opsScrollView setBorderType:NSNoBorder];
 	[right addSubview:self.opsScrollView];
 
 	[self.splitView addSubview:right];
 
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(layoutEnvMaskWindowChrome) name:NSWindowDidResizeNotification object:w];
+
+	[w.contentView addSubview:self.statusTextField];
+
+	[self layoutEnvMaskWindowChrome];
 	[self layoutRightEditorSubviews];
 
+	NSView *leftPane = [[self.splitView subviews] firstObject];
+	CGFloat pos = leftPane ? NSWidth(leftPane.frame) : 0;
+	if (pos > kEnvSplitMaxWidth) {
+		[self.splitView setPosition:kEnvSplitDefaultWidth ofDividerAtIndex:0];
+	}
+
 	[self reloadFromStore];
-	[self.sourceList expandItem:nil expandChildren:YES];
 }
 
-#pragma mark - NSTextFieldDelegate
-
-- (void)controlTextDidEndEditing:(NSNotification *)obj
+- (void)windowDidLoad
 {
-	// Do NOT persist on every keystroke. Persist triggers reload+reselect which steals focus
-	// and makes the text field feel "unable to type".
-	id field = obj.object;
-	if (field == self.nameField) {
-		[self updateSelectedName:self.nameField];
-	} else if (field == self.priorityField) {
-		[self updateSelectedPriority:self.priorityField];
-	}
+	[super windowDidLoad];
 }
 
 - (void)show
@@ -441,48 +399,169 @@ static EnvMaskHostsLikeEditorWindowController *sharedInstance = nil;
 	[self showWindow:self];
 	[self.window orderFrontRegardless];
 	[self.window makeKeyAndOrderFront:self];
+	// split / clip 在首屏 layout 完成后再算一次，避免 contentSize 仍为 0 导致 sync 未铺满文档视图
+	dispatch_async(dispatch_get_main_queue(), ^{
+		[self layoutRightEditorSubviews];
+	});
 }
 
-#pragma mark - Outline datasource
+#pragma mark - NSTableViewDataSource / Delegate
 
-- (id)outlineView:(NSOutlineView *)outlineView child:(NSInteger)index ofItem:(id)item
+- (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView
 {
-	EnvTreeItem *i = item ?: self.rootItem;
-	return i.children[(NSUInteger)index];
+	return (NSInteger)self.flatLayers.count;
 }
 
-- (BOOL)outlineView:(NSOutlineView *)outlineView isItemExpandable:(id)item
+- (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row
 {
-	return [(EnvTreeItem *)item isGroup];
+	if (row < 0 || (NSUInteger)row >= self.flatLayers.count) return nil;
+	EnvLayer *l = self.flatLayers[(NSUInteger)row];
+	if ([[tableColumn identifier] isEqualToString:@"prio"]) {
+		return [NSString stringWithFormat:@"%ld", (long)l.priority];
+	}
+	NSString *mark = l.enabled ? @"✓ " : @"";
+	return [NSString stringWithFormat:@"%@%@", mark, l.name ?: @""];
 }
 
-- (NSInteger)outlineView:(NSOutlineView *)outlineView numberOfChildrenOfItem:(id)item
+- (void)tableView:(NSTableView *)tableView setObjectValue:(id)obj forTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row
 {
-	EnvTreeItem *i = item ?: self.rootItem;
-	return (NSInteger)[i.children count];
+	if (row < 0 || (NSUInteger)row >= self.flatLayers.count) return;
+	EnvLayer *l = self.flatLayers[(NSUInteger)row];
+	NSArray<EnvVarOp *> *ops = [self opsForPersistForLayerId:l.layerId];
+	if ([[tableColumn identifier] isEqualToString:@"prio"]) {
+		NSInteger p = [obj respondsToSelector:@selector(integerValue)] ? [obj integerValue] : 0;
+		EnvLayer *nl = [EnvLayer layerWithId:l.layerId name:l.name enabled:l.enabled priority:p ops:ops];
+		[self replaceLayerInDocumentWithUpdated:nl];
+		return;
+	}
+	NSString *raw = [obj isKindOfClass:[NSString class]] ? (NSString *)obj : @"";
+	raw = [raw stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+	if ([raw hasPrefix:@"✓"]) {
+		raw = [[raw substringFromIndex:MIN((NSUInteger)1, raw.length)] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+	}
+	if ([raw length] == 0) {
+		[tableView reloadData];
+		return;
+	}
+	EnvLayer *nl = [EnvLayer layerWithId:l.layerId name:raw enabled:l.enabled priority:l.priority ops:ops];
+	[self replaceLayerInDocumentWithUpdated:nl];
 }
 
-- (id)outlineView:(NSOutlineView *)outlineView objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item
+- (NSArray<EnvVarOp *> *)opsForPersistForLayerId:(NSString *)lid
 {
-	EnvTreeItem *i = (EnvTreeItem *)item;
-	if (i.isGroup) return i.title;
-	EnvLayer *l = i.layer;
-	NSString *mark = l.enabled ? @"✓" : @"";
-	return [NSString stringWithFormat:@"%@ %@", mark, i.title ?: @""];
+	if (self.selectedLayer && [self.selectedLayer.layerId isEqualToString:lid] && self.opsTextDirty) {
+		return [EnvOpsTextFormat opsFromText:self.opsTextView.string];
+	}
+	EnvLayer *x = [self layerById:lid];
+	return x.ops ?: @[];
 }
 
-- (BOOL)outlineView:(NSOutlineView *)outlineView shouldSelectItem:(id)item
+- (void)replaceLayerInDocumentWithUpdated:(EnvLayer *)nl
 {
-	return [(EnvTreeItem *)item selectable];
+	NSMutableArray *layers = [self.layers mutableCopy];
+	for (NSUInteger i = 0; i < [layers count]; i++) {
+		if ([[layers[i] layerId] isEqualToString:nl.layerId]) {
+			layers[i] = nl;
+			break;
+		}
+	}
+	if (self.selectedLayer && [self.selectedLayer.layerId isEqualToString:nl.layerId]) {
+		self.opsTextDirty = NO;
+	}
+	[self persistLayers:layers];
 }
 
-- (void)outlineViewSelectionDidChange:(NSNotification *)notification
+- (void)tableViewSelectionDidChange:(NSNotification *)notification
 {
 	[self commitOpsTextForCurrentLayerIfDirty];
+	NSInteger row = self.sourceList.selectedRow;
+	if (row < 0 || (NSUInteger)row >= self.flatLayers.count) return;
+	[self selectLayer:self.flatLayers[(NSUInteger)row]];
+}
 
-	EnvTreeItem *i = [self.sourceList itemAtRow:self.sourceList.selectedRow];
-	if (!i || i.isGroup) return;
-	if (i.layer) [self selectLayer:i.layer];
+#pragma mark - NSSplitViewDelegate（与 EditorController / Editor.xib 中 Gas Mask 主窗口一致）
+
+- (CGFloat)splitView:(NSSplitView *)splitView constrainMinCoordinate:(CGFloat)proposedMinimumPosition ofSubviewAt:(NSInteger)dividerIndex
+{
+	return proposedMinimumPosition + kEnvSplitMinWidth;
+}
+
+- (CGFloat)splitView:(NSSplitView *)splitView constrainMaxCoordinate:(CGFloat)proposedMaximumPosition ofSubviewAt:(NSInteger)dividerIndex
+{
+	(void)proposedMaximumPosition;
+	return kEnvSplitMaxWidth;
+}
+
+- (void)splitView:(NSSplitView *)sender resizeSubviewsWithOldSize:(NSSize)oldSize
+{
+	(void)oldSize;
+	NSRect newFrame = [sender frame];
+	NSView *left = [sender subviews][0];
+	NSRect leftFrame = [left frame];
+	NSView *right = [sender subviews][1];
+	NSRect rightFrame = [right frame];
+	CGFloat dividerThickness = [sender dividerThickness];
+	leftFrame.size.height = newFrame.size.height;
+	rightFrame.size.width = newFrame.size.width - leftFrame.size.width - dividerThickness;
+	rightFrame.size.height = newFrame.size.height;
+	rightFrame.origin.x = leftFrame.size.width + dividerThickness;
+	[left setFrame:leftFrame];
+	[right setFrame:rightFrame];
+}
+
+- (BOOL)splitView:(NSSplitView *)splitView canCollapseSubview:(NSView *)subview
+{
+	(void)splitView;
+	(void)subview;
+	return NO;
+}
+
+#pragma mark - NSToolbarDelegate
+
+- (NSArray<NSToolbarItemIdentifier> *)toolbarAllowedItemIdentifiers:(NSToolbar *)toolbar
+{
+	return @[kEnvTBCreate, kEnvTBRemove, kEnvTBSave, kEnvTBActivate, NSToolbarFlexibleSpaceItemIdentifier, kEnvTBTerminal];
+}
+
+- (NSArray<NSToolbarItemIdentifier> *)toolbarDefaultItemIdentifiers:(NSToolbar *)toolbar
+{
+	return @[kEnvTBCreate, kEnvTBRemove, kEnvTBSave, kEnvTBActivate, NSToolbarFlexibleSpaceItemIdentifier, kEnvTBTerminal];
+}
+
+- (NSToolbarItem *)toolbar:(NSToolbar *)toolbar itemForItemIdentifier:(NSToolbarItemIdentifier)itemIdentifier willBeInsertedIntoToolbar:(BOOL)flag
+{
+	NSToolbarItem *item = [[NSToolbarItem alloc] initWithItemIdentifier:itemIdentifier];
+	[item setTarget:self];
+	[item setMinSize:NSMakeSize(28, 28)];
+	[item setMaxSize:NSMakeSize(120, 28)];
+
+	if ([itemIdentifier isEqualToString:kEnvTBCreate]) {
+		[item setLabel:@"Create"];
+		[item setPaletteLabel:@"Create"];
+		[item setImage:[NSImage imageNamed:NSImageNameAddTemplate]];
+		[item setAction:@selector(createProfile:)];
+	} else if ([itemIdentifier isEqualToString:kEnvTBRemove]) {
+		[item setLabel:@"Remove"];
+		[item setPaletteLabel:@"Remove"];
+		[item setImage:[NSImage imageNamed:NSImageNameRemoveTemplate]];
+		[item setAction:@selector(removeSelected:)];
+	} else if ([itemIdentifier isEqualToString:kEnvTBSave]) {
+		[item setLabel:@"Save"];
+		[item setPaletteLabel:@"Save"];
+		[item setImage:[NSImage imageNamed:NSImageNameBookmarksTemplate]];
+		[item setAction:@selector(saveOpsText:)];
+	} else if ([itemIdentifier isEqualToString:kEnvTBActivate]) {
+		[item setLabel:@"Activate"];
+		[item setPaletteLabel:@"Activate"];
+		[item setImage:[NSImage imageNamed:NSImageNameMenuOnStateTemplate]];
+		[item setAction:@selector(toggleActivateSelected:)];
+	} else if ([itemIdentifier isEqualToString:kEnvTBTerminal]) {
+		[item setLabel:@"Terminal"];
+		[item setPaletteLabel:@"Terminal"];
+		[item setImage:[NSImage imageNamed:NSImageNameActionTemplate]];
+		[item setAction:@selector(toggleTerminalAutoApply:)];
+	}
+	return item;
 }
 
 #pragma mark - NSTextViewDelegate
@@ -522,65 +601,15 @@ static EnvMaskHostsLikeEditorWindowController *sharedInstance = nil;
 	[self persistLayers:layers];
 }
 
-- (void)toggleEnableSelected:(id)sender
+- (void)toggleActivateSelected:(id)sender
 {
 	[self commitOpsTextForCurrentLayerIfDirty];
 	if (!self.selectedLayer) return;
-	BOOL newEnabled = !self.selectedLayer.enabled;
-	[self.enabledCheckbox setState:(newEnabled ? NSOnState : NSOffState)];
-	[self setSelectedEnabledFromCheckbox:nil];
-}
-
-- (void)setSelectedEnabledFromCheckbox:(id)sender
-{
-	if (!self.selectedLayer) return;
 	EnvLayer *l = self.selectedLayer;
-	BOOL enabled = (self.enabledCheckbox.state == NSOnState);
-	NSArray<EnvVarOp *> *ops = [self resolvedOpsForPersist];
-	EnvLayer *nl = [EnvLayer layerWithId:l.layerId name:l.name enabled:enabled priority:l.priority ops:ops];
-
-	NSMutableArray *layers = [self.layers mutableCopy];
-	for (NSUInteger i = 0; i < [layers count]; i++) {
-		EnvLayer *x = layers[i];
-		if ([x.layerId isEqualToString:l.layerId]) { layers[i] = nl; break; }
-	}
-	self.opsTextDirty = NO;
-	[self persistLayers:layers];
-}
-
-- (void)updateSelectedPriority:(id)sender
-{
-	if (!self.selectedLayer) return;
-	EnvLayer *l = self.selectedLayer;
-	NSInteger p = [self.priorityField.stringValue integerValue];
-	NSArray<EnvVarOp *> *ops = [self resolvedOpsForPersist];
-	EnvLayer *nl = [EnvLayer layerWithId:l.layerId name:l.name enabled:l.enabled priority:p ops:ops];
-
-	NSMutableArray *layers = [self.layers mutableCopy];
-	for (NSUInteger i = 0; i < [layers count]; i++) {
-		EnvLayer *x = layers[i];
-		if ([x.layerId isEqualToString:l.layerId]) { layers[i] = nl; break; }
-	}
-	self.opsTextDirty = NO;
-	[self persistLayers:layers];
-}
-
-- (void)updateSelectedName:(id)sender
-{
-	if (!self.selectedLayer) return;
-	EnvLayer *l = self.selectedLayer;
-	NSString *name = [self.nameField.stringValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-	if ([name length] == 0) return;
-	NSArray<EnvVarOp *> *ops = [self resolvedOpsForPersist];
-	EnvLayer *nl = [EnvLayer layerWithId:l.layerId name:name enabled:l.enabled priority:l.priority ops:ops];
-
-	NSMutableArray *layers = [self.layers mutableCopy];
-	for (NSUInteger i = 0; i < [layers count]; i++) {
-		EnvLayer *x = layers[i];
-		if ([x.layerId isEqualToString:l.layerId]) { layers[i] = nl; break; }
-	}
-	self.opsTextDirty = NO;
-	[self persistLayers:layers];
+	BOOL en = !l.enabled;
+	NSArray<EnvVarOp *> *ops = [self opsForPersistForLayerId:l.layerId];
+	EnvLayer *nl = [EnvLayer layerWithId:l.layerId name:l.name enabled:en priority:l.priority ops:ops];
+	[self replaceLayerInDocumentWithUpdated:nl];
 }
 
 - (void)toggleTerminalAutoApply:(id)sender
@@ -600,17 +629,15 @@ static EnvMaskHostsLikeEditorWindowController *sharedInstance = nil;
 
 - (void)refreshPreview:(id)sender
 {
-	NSDictionary *env = [EnvResolver resolveFromLayers:self.layers];
-	NSMutableString *out = [NSMutableString string];
-	[out appendFormat:@"终端自动生效: %@\n", ([EnvExporter isZshrcInstalled] ? @"已开启" : @"未开启")];
-	[out appendFormat:@"Store: %@\n", [[EnvStore defaultInstance] rootDirectory]];
-	[out appendFormat:@"导出脚本: %@\n\n", [EnvExporter activeZshPath]];
-	[out appendString:@"Resolved env:\n"];
-	NSArray *keys = [[env allKeys] sortedArrayUsingSelector:@selector(compare:)];
-	for (NSString *k in keys) {
-		[out appendFormat:@"%@=%@\n", k, env[k]];
+	(void)[EnvResolver resolveFromLayers:self.layers];
+	NSUInteger n = self.flatLayers.count;
+	if (self.statusTextField) {
+		[self.statusTextField setStringValue:[NSString stringWithFormat:@"%lu layer(s)", (unsigned long)n]];
 	}
-	self.previewText.string = out;
+	if (@available(macOS 11.0, *)) {
+		BOOL on = [EnvExporter isZshrcInstalled];
+		self.window.subtitle = on ? @"终端 zsh 已接入" : @"终端 zsh 未接入";
+	}
 }
 
 @end

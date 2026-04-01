@@ -9,7 +9,6 @@
 #import "EnvStore.h"
 #import "EnvResolver.h"
 #import "EnvExporter.h"
-#import "EnvMaskHostsLikeEditorWindowController.h"
 #import "NSAlert+EnvMask.h"
 
 @implementation EnvMaskController
@@ -254,11 +253,6 @@ static EnvMaskController *sharedInstance = nil;
 	[openItem setTarget:self];
 	[root addItem:openItem];
 
-	[root addItem:[NSMenuItem separatorItem]];
-	NSMenuItem *editorItem = [[NSMenuItem alloc] initWithTitle:@"打开编辑器..." action:@selector(openEnvEditor:) keyEquivalent:@""];
-	[editorItem setTarget:self];
-	[root addItem:editorItem];
-
 	return root;
 }
 
@@ -321,13 +315,6 @@ static EnvMaskController *sharedInstance = nil;
 {
 	[self exportActiveZshWithAlertOnError];
 	[EnvExporter openActiveZshInFinder];
-}
-
-- (void)openEnvEditor:(id)sender
-{
-	[self activateAppAndRunOnMainAsync:^{
-		[[EnvMaskHostsLikeEditorWindowController defaultInstance] show];
-	}];
 }
 
 @end

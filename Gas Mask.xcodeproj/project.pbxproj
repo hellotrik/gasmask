@@ -3,22 +3,11 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1DDD58140DA1D0A300B32029 /* MainMenu.xib */; };
-		36E0AC019B7C4D2A8A0B1001 /* EnvTreeItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 36E0AC009B7C4D2A8A0B1001 /* EnvTreeItem.m */; };
-		36E0AC049B7C4D2A8A0B1001 /* EnvMaskHostsLikeEditorWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 36E0AC039B7C4D2A8A0B1001 /* EnvMaskHostsLikeEditorWindowController.m */; };
-		36E0AC059B7C4D2A8A0B1001 /* NSAlert+EnvMask.m in Sources */ = {isa = PBXBuildFile; fileRef = 36E0AC079B7C4D2A8A0B1001 /* NSAlert+EnvMask.m */; };
-		36E0AC0A9B7C4D2A8A0B1001 /* EnvOpsTextFormat.m in Sources */ = {isa = PBXBuildFile; fileRef = 36E0AC099B7C4D2A8A0B1001 /* EnvOpsTextFormat.m */; };
-		36E0AA0C9B7C4D2A8A0B1001 /* EnvLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 36E0AB0B9B7C4D2A8A0B1001 /* EnvLayer.m */; };
-		36E0AA0E9B7C4D2A8A0B1001 /* EnvResolver.m in Sources */ = {isa = PBXBuildFile; fileRef = 36E0AB0D9B7C4D2A8A0B1001 /* EnvResolver.m */; };
-		36E0AA109B7C4D2A8A0B1001 /* EnvStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 36E0AB0F9B7C4D2A8A0B1001 /* EnvStore.m */; };
-		36E0AA129B7C4D2A8A0B1001 /* EnvExporter.m in Sources */ = {isa = PBXBuildFile; fileRef = 36E0AB119B7C4D2A8A0B1001 /* EnvExporter.m */; };
-		36E0AA149B7C4D2A8A0B1001 /* EnvMaskController.m in Sources */ = {isa = PBXBuildFile; fileRef = 36E0AB139B7C4D2A8A0B1001 /* EnvMaskController.m */; };
-		36E0AA169B7C4D2A8A0B1001 /* EnvLauncherGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 36E0AB159B7C4D2A8A0B1001 /* EnvLauncherGenerator.m */; };
-		36E0AA189B7C4D2A8A0B1001 /* EnvEditorWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 36E0AB179B7C4D2A8A0B1001 /* EnvEditorWindowController.m */; };
 		350920B51226EB9F00ACA0F4 /* HostsDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = 350920B41226EB9F00ACA0F4 /* HostsDownloader.m */; };
 		350920C11226ED5100ACA0F4 /* LocalHostsManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 350920C01226ED5100ACA0F4 /* LocalHostsManager.m */; };
 		350920C51226EDD600ACA0F4 /* AbstractHostsManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 350920C41226EDD600ACA0F4 /* AbstractHostsManager.m */; };
@@ -79,7 +68,6 @@
 		35498EDB12187F5D00E46952 /* Offline_rollover.png in Resources */ = {isa = PBXBuildFile; fileRef = 35498EDA12187F5D00E46952 /* Offline_rollover.png */; };
 		354C0BC510E782A5005B9A33 /* hosts.icns in Resources */ = {isa = PBXBuildFile; fileRef = 354C0BC410E782A5005B9A33 /* hosts.icns */; };
 		354CCF811117285300EB6948 /* HostsListViewMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 354CCF801117285300EB6948 /* HostsListViewMenu.m */; };
-		354DDD0E114EBC9700DB76D7 /* CrashReportSender.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 354DDD08114EBC8000DB76D7 /* CrashReportSender.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		354E7E4010AEB09D00FC4757 /* HostsMainController.m in Sources */ = {isa = PBXBuildFile; fileRef = 354E7E3F10AEB09D00FC4757 /* HostsMainController.m */; };
 		354E7E7410AEB25100FC4757 /* Hosts.m in Sources */ = {isa = PBXBuildFile; fileRef = 354E7E7310AEB25100FC4757 /* Hosts.m */; };
 		354E7EB110AEEF3D00FC4757 /* StructureConverter.m in Sources */ = {isa = PBXBuildFile; fileRef = 354E7EB010AEEF3D00FC4757 /* StructureConverter.m */; };
@@ -146,6 +134,17 @@
 		35F414F4152E1B7800B99583 /* VDKQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 35F414F3152E1B7800B99583 /* VDKQueue.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		35FBCA3B1223172300860FDA /* RegexKitLite.m in Sources */ = {isa = PBXBuildFile; fileRef = 35FBCA3A1223172300860FDA /* RegexKitLite.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		35FBCA511223181000860FDA /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 35FBCA501223181000860FDA /* libicucore.dylib */; };
+		36E0AA0C9B7C4D2A8A0B1001 /* EnvLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 36E0AB0B9B7C4D2A8A0B1001 /* EnvLayer.m */; };
+		36E0AA0E9B7C4D2A8A0B1001 /* EnvResolver.m in Sources */ = {isa = PBXBuildFile; fileRef = 36E0AB0D9B7C4D2A8A0B1001 /* EnvResolver.m */; };
+		36E0AA109B7C4D2A8A0B1001 /* EnvStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 36E0AB0F9B7C4D2A8A0B1001 /* EnvStore.m */; };
+		36E0AA129B7C4D2A8A0B1001 /* EnvExporter.m in Sources */ = {isa = PBXBuildFile; fileRef = 36E0AB119B7C4D2A8A0B1001 /* EnvExporter.m */; };
+		36E0AA149B7C4D2A8A0B1001 /* EnvMaskController.m in Sources */ = {isa = PBXBuildFile; fileRef = 36E0AB139B7C4D2A8A0B1001 /* EnvMaskController.m */; };
+		36E0AA169B7C4D2A8A0B1001 /* EnvLauncherGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 36E0AB159B7C4D2A8A0B1001 /* EnvLauncherGenerator.m */; };
+		36E0AA189B7C4D2A8A0B1001 /* EnvEditorWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 36E0AB179B7C4D2A8A0B1001 /* EnvEditorWindowController.m */; };
+		36E0AC019B7C4D2A8A0B1001 /* EnvTreeItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 36E0AC009B7C4D2A8A0B1001 /* EnvTreeItem.m */; };
+		36E0AC049B7C4D2A8A0B1001 /* EnvMaskHostsLikeEditorWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 36E0AC039B7C4D2A8A0B1001 /* EnvMaskHostsLikeEditorWindowController.m */; };
+		36E0AC059B7C4D2A8A0B1001 /* NSAlert+EnvMask.m in Sources */ = {isa = PBXBuildFile; fileRef = 36E0AC079B7C4D2A8A0B1001 /* NSAlert+EnvMask.m */; };
+		36E0AC0A9B7C4D2A8A0B1001 /* EnvOpsTextFormat.m in Sources */ = {isa = PBXBuildFile; fileRef = 36E0AC099B7C4D2A8A0B1001 /* EnvOpsTextFormat.m */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
@@ -232,28 +231,6 @@
 		352E049E10627A830071E25B /* Editor.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = Editor.xib; sourceTree = "<group>"; };
 		352E04B810627C1D0071E25B /* ApplicationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ApplicationController.h; path = Source/ApplicationController.h; sourceTree = "<group>"; };
 		352E04B910627C1D0071E25B /* ApplicationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ApplicationController.m; path = Source/ApplicationController.m; sourceTree = "<group>"; };
-		36E0AB0A9B7C4D2A8A0B1001 /* EnvLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EnvLayer.h; path = Source/Env/EnvLayer.h; sourceTree = "<group>"; };
-		36E0AB0B9B7C4D2A8A0B1001 /* EnvLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EnvLayer.m; path = Source/Env/EnvLayer.m; sourceTree = "<group>"; };
-		36E0AB0C9B7C4D2A8A0B1001 /* EnvResolver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EnvResolver.h; path = Source/Env/EnvResolver.h; sourceTree = "<group>"; };
-		36E0AB0D9B7C4D2A8A0B1001 /* EnvResolver.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EnvResolver.m; path = Source/Env/EnvResolver.m; sourceTree = "<group>"; };
-		36E0AB0E9B7C4D2A8A0B1001 /* EnvStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EnvStore.h; path = Source/Env/EnvStore.h; sourceTree = "<group>"; };
-		36E0AB0F9B7C4D2A8A0B1001 /* EnvStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EnvStore.m; path = Source/Env/EnvStore.m; sourceTree = "<group>"; };
-		36E0AB109B7C4D2A8A0B1001 /* EnvExporter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EnvExporter.h; path = Source/Env/EnvExporter.h; sourceTree = "<group>"; };
-		36E0AB119B7C4D2A8A0B1001 /* EnvExporter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EnvExporter.m; path = Source/Env/EnvExporter.m; sourceTree = "<group>"; };
-		36E0AB129B7C4D2A8A0B1001 /* EnvMaskController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EnvMaskController.h; path = Source/Env/EnvMaskController.h; sourceTree = "<group>"; };
-		36E0AB139B7C4D2A8A0B1001 /* EnvMaskController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EnvMaskController.m; path = Source/Env/EnvMaskController.m; sourceTree = "<group>"; };
-		36E0AB149B7C4D2A8A0B1001 /* EnvLauncherGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EnvLauncherGenerator.h; path = Source/Env/EnvLauncherGenerator.h; sourceTree = "<group>"; };
-		36E0AB159B7C4D2A8A0B1001 /* EnvLauncherGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EnvLauncherGenerator.m; path = Source/Env/EnvLauncherGenerator.m; sourceTree = "<group>"; };
-		36E0AB169B7C4D2A8A0B1001 /* EnvEditorWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EnvEditorWindowController.h; path = Source/Env/EnvEditorWindowController.h; sourceTree = "<group>"; };
-		36E0AB179B7C4D2A8A0B1001 /* EnvEditorWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EnvEditorWindowController.m; path = Source/Env/EnvEditorWindowController.m; sourceTree = "<group>"; };
-		36E0ABFA9B7C4D2A8A0B1001 /* EnvTreeItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EnvTreeItem.h; path = Source/Env/EnvTreeItem.h; sourceTree = "<group>"; };
-		36E0AC009B7C4D2A8A0B1001 /* EnvTreeItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EnvTreeItem.m; path = Source/Env/EnvTreeItem.m; sourceTree = "<group>"; };
-		36E0AC029B7C4D2A8A0B1001 /* EnvMaskHostsLikeEditorWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EnvMaskHostsLikeEditorWindowController.h; path = Source/Env/EnvMaskHostsLikeEditorWindowController.h; sourceTree = "<group>"; };
-		36E0AC039B7C4D2A8A0B1001 /* EnvMaskHostsLikeEditorWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EnvMaskHostsLikeEditorWindowController.m; path = Source/Env/EnvMaskHostsLikeEditorWindowController.m; sourceTree = "<group>"; };
-		36E0AC069B7C4D2A8A0B1001 /* NSAlert+EnvMask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSAlert+EnvMask.h"; path = "Source/Env/NSAlert+EnvMask.h"; sourceTree = "<group>"; };
-		36E0AC079B7C4D2A8A0B1001 /* NSAlert+EnvMask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSAlert+EnvMask.m"; path = "Source/Env/NSAlert+EnvMask.m"; sourceTree = "<group>"; };
-		36E0AC089B7C4D2A8A0B1001 /* EnvOpsTextFormat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EnvOpsTextFormat.h; path = Source/Env/EnvOpsTextFormat.h; sourceTree = "<group>"; };
-		36E0AC099B7C4D2A8A0B1001 /* EnvOpsTextFormat.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EnvOpsTextFormat.m; path = Source/Env/EnvOpsTextFormat.m; sourceTree = "<group>"; };
 		352E04F9106281940071E25B /* Create.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Create.png; path = Resources/Images/Create.png; sourceTree = "<group>"; };
 		352E04FB106281940071E25B /* Save.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Save.png; path = Resources/Images/Save.png; sourceTree = "<group>"; };
 		352E050C106283630071E25B /* EditorController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EditorController.h; path = Source/EditorController.h; sourceTree = "<group>"; };
@@ -396,6 +373,28 @@
 		35FBCA501223181000860FDA /* libicucore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.dylib; path = usr/lib/libicucore.dylib; sourceTree = SDKROOT; };
 		35FC65991114B12600BD18C3 /* launcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = launcher.m; path = Source/launcher.m; sourceTree = "<group>"; };
 		35FC65A71114B29A00BD18C3 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		36E0AB0A9B7C4D2A8A0B1001 /* EnvLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EnvLayer.h; path = Source/Env/EnvLayer.h; sourceTree = "<group>"; };
+		36E0AB0B9B7C4D2A8A0B1001 /* EnvLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EnvLayer.m; path = Source/Env/EnvLayer.m; sourceTree = "<group>"; };
+		36E0AB0C9B7C4D2A8A0B1001 /* EnvResolver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EnvResolver.h; path = Source/Env/EnvResolver.h; sourceTree = "<group>"; };
+		36E0AB0D9B7C4D2A8A0B1001 /* EnvResolver.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EnvResolver.m; path = Source/Env/EnvResolver.m; sourceTree = "<group>"; };
+		36E0AB0E9B7C4D2A8A0B1001 /* EnvStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EnvStore.h; path = Source/Env/EnvStore.h; sourceTree = "<group>"; };
+		36E0AB0F9B7C4D2A8A0B1001 /* EnvStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EnvStore.m; path = Source/Env/EnvStore.m; sourceTree = "<group>"; };
+		36E0AB109B7C4D2A8A0B1001 /* EnvExporter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EnvExporter.h; path = Source/Env/EnvExporter.h; sourceTree = "<group>"; };
+		36E0AB119B7C4D2A8A0B1001 /* EnvExporter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EnvExporter.m; path = Source/Env/EnvExporter.m; sourceTree = "<group>"; };
+		36E0AB129B7C4D2A8A0B1001 /* EnvMaskController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EnvMaskController.h; path = Source/Env/EnvMaskController.h; sourceTree = "<group>"; };
+		36E0AB139B7C4D2A8A0B1001 /* EnvMaskController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EnvMaskController.m; path = Source/Env/EnvMaskController.m; sourceTree = "<group>"; };
+		36E0AB149B7C4D2A8A0B1001 /* EnvLauncherGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EnvLauncherGenerator.h; path = Source/Env/EnvLauncherGenerator.h; sourceTree = "<group>"; };
+		36E0AB159B7C4D2A8A0B1001 /* EnvLauncherGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EnvLauncherGenerator.m; path = Source/Env/EnvLauncherGenerator.m; sourceTree = "<group>"; };
+		36E0AB169B7C4D2A8A0B1001 /* EnvEditorWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EnvEditorWindowController.h; path = Source/Env/EnvEditorWindowController.h; sourceTree = "<group>"; };
+		36E0AB179B7C4D2A8A0B1001 /* EnvEditorWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EnvEditorWindowController.m; path = Source/Env/EnvEditorWindowController.m; sourceTree = "<group>"; };
+		36E0ABFA9B7C4D2A8A0B1001 /* EnvTreeItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EnvTreeItem.h; path = Source/Env/EnvTreeItem.h; sourceTree = "<group>"; };
+		36E0AC009B7C4D2A8A0B1001 /* EnvTreeItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EnvTreeItem.m; path = Source/Env/EnvTreeItem.m; sourceTree = "<group>"; };
+		36E0AC029B7C4D2A8A0B1001 /* EnvMaskHostsLikeEditorWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EnvMaskHostsLikeEditorWindowController.h; path = Source/Env/EnvMaskHostsLikeEditorWindowController.h; sourceTree = "<group>"; };
+		36E0AC039B7C4D2A8A0B1001 /* EnvMaskHostsLikeEditorWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EnvMaskHostsLikeEditorWindowController.m; path = Source/Env/EnvMaskHostsLikeEditorWindowController.m; sourceTree = "<group>"; };
+		36E0AC069B7C4D2A8A0B1001 /* NSAlert+EnvMask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSAlert+EnvMask.h"; path = "Source/Env/NSAlert+EnvMask.h"; sourceTree = "<group>"; };
+		36E0AC079B7C4D2A8A0B1001 /* NSAlert+EnvMask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSAlert+EnvMask.m"; path = "Source/Env/NSAlert+EnvMask.m"; sourceTree = "<group>"; };
+		36E0AC089B7C4D2A8A0B1001 /* EnvOpsTextFormat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EnvOpsTextFormat.h; path = Source/Env/EnvOpsTextFormat.h; sourceTree = "<group>"; };
+		36E0AC099B7C4D2A8A0B1001 /* EnvOpsTextFormat.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EnvOpsTextFormat.m; path = Source/Env/EnvOpsTextFormat.m; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; explicitFileType = text.plist.info; fileEncoding = 4; path = Info.plist; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* Gas Mask.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Gas Mask.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -606,35 +605,6 @@
 				359967531656B52500BCF16D /* NotificationHelper.m */,
 			);
 			name = Core;
-			sourceTree = "<group>";
-		};
-		36E0AA019B7C4D2A8A0B1001 /* Env Mask */ = {
-			isa = PBXGroup;
-			children = (
-				36E0AB0A9B7C4D2A8A0B1001 /* EnvLayer.h */,
-				36E0AB0B9B7C4D2A8A0B1001 /* EnvLayer.m */,
-				36E0AB0C9B7C4D2A8A0B1001 /* EnvResolver.h */,
-				36E0AB0D9B7C4D2A8A0B1001 /* EnvResolver.m */,
-				36E0AB0E9B7C4D2A8A0B1001 /* EnvStore.h */,
-				36E0AB0F9B7C4D2A8A0B1001 /* EnvStore.m */,
-				36E0AB109B7C4D2A8A0B1001 /* EnvExporter.h */,
-				36E0AB119B7C4D2A8A0B1001 /* EnvExporter.m */,
-				36E0AB129B7C4D2A8A0B1001 /* EnvMaskController.h */,
-				36E0AB139B7C4D2A8A0B1001 /* EnvMaskController.m */,
-				36E0AB149B7C4D2A8A0B1001 /* EnvLauncherGenerator.h */,
-				36E0AB159B7C4D2A8A0B1001 /* EnvLauncherGenerator.m */,
-				36E0AB169B7C4D2A8A0B1001 /* EnvEditorWindowController.h */,
-				36E0AB179B7C4D2A8A0B1001 /* EnvEditorWindowController.m */,
-				36E0ABFA9B7C4D2A8A0B1001 /* EnvTreeItem.h */,
-				36E0AC009B7C4D2A8A0B1001 /* EnvTreeItem.m */,
-				36E0AC029B7C4D2A8A0B1001 /* EnvMaskHostsLikeEditorWindowController.h */,
-				36E0AC039B7C4D2A8A0B1001 /* EnvMaskHostsLikeEditorWindowController.m */,
-				36E0AC069B7C4D2A8A0B1001 /* NSAlert+EnvMask.h */,
-				36E0AC079B7C4D2A8A0B1001 /* NSAlert+EnvMask.m */,
-				36E0AC089B7C4D2A8A0B1001 /* EnvOpsTextFormat.h */,
-				36E0AC099B7C4D2A8A0B1001 /* EnvOpsTextFormat.m */,
-			);
-			name = "Env Mask";
 			sourceTree = "<group>";
 		};
 		3513F352115153450046FFF7 /* Editor */ = {
@@ -896,6 +866,35 @@
 			name = "3rd Party";
 			sourceTree = "<group>";
 		};
+		36E0AA019B7C4D2A8A0B1001 /* Env Mask */ = {
+			isa = PBXGroup;
+			children = (
+				36E0AB0A9B7C4D2A8A0B1001 /* EnvLayer.h */,
+				36E0AB0B9B7C4D2A8A0B1001 /* EnvLayer.m */,
+				36E0AB0C9B7C4D2A8A0B1001 /* EnvResolver.h */,
+				36E0AB0D9B7C4D2A8A0B1001 /* EnvResolver.m */,
+				36E0AB0E9B7C4D2A8A0B1001 /* EnvStore.h */,
+				36E0AB0F9B7C4D2A8A0B1001 /* EnvStore.m */,
+				36E0AB109B7C4D2A8A0B1001 /* EnvExporter.h */,
+				36E0AB119B7C4D2A8A0B1001 /* EnvExporter.m */,
+				36E0AB129B7C4D2A8A0B1001 /* EnvMaskController.h */,
+				36E0AB139B7C4D2A8A0B1001 /* EnvMaskController.m */,
+				36E0AB149B7C4D2A8A0B1001 /* EnvLauncherGenerator.h */,
+				36E0AB159B7C4D2A8A0B1001 /* EnvLauncherGenerator.m */,
+				36E0AB169B7C4D2A8A0B1001 /* EnvEditorWindowController.h */,
+				36E0AB179B7C4D2A8A0B1001 /* EnvEditorWindowController.m */,
+				36E0ABFA9B7C4D2A8A0B1001 /* EnvTreeItem.h */,
+				36E0AC009B7C4D2A8A0B1001 /* EnvTreeItem.m */,
+				36E0AC029B7C4D2A8A0B1001 /* EnvMaskHostsLikeEditorWindowController.h */,
+				36E0AC039B7C4D2A8A0B1001 /* EnvMaskHostsLikeEditorWindowController.m */,
+				36E0AC069B7C4D2A8A0B1001 /* NSAlert+EnvMask.h */,
+				36E0AC079B7C4D2A8A0B1001 /* NSAlert+EnvMask.m */,
+				36E0AC089B7C4D2A8A0B1001 /* EnvOpsTextFormat.h */,
+				36E0AC099B7C4D2A8A0B1001 /* EnvOpsTextFormat.m */,
+			);
+			name = "Env Mask";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -949,11 +948,9 @@
 				ORGANIZATIONNAME = Clockwise;
 				TargetAttributes = {
 					3579F0CC1114B7B900123416 = {
-						DevelopmentTeam = D5473R5948;
 						ProvisioningStyle = Automatic;
 					};
 					8D1107260486CEB800E47090 = {
-						DevelopmentTeam = D5473R5948;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -1183,7 +1180,7 @@
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
-				DEVELOPMENT_TEAM = D5473R5948;
+				DEVELOPMENT_TEAM = Z7GP886B73;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -1215,7 +1212,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = D5473R5948;
+				DEVELOPMENT_TEAM = Z7GP886B73;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
@@ -1245,15 +1242,10 @@
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
-				DEVELOPMENT_TEAM = D5473R5948;
+				DEVELOPMENT_TEAM = Z7GP886B73;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Frameworks\"",
-				);
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-					"@loader_path/../Frameworks",
 				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_MODEL_TUNING = G5;
@@ -1262,6 +1254,11 @@
 				GCC_PREFIX_HEADER = Gas_Mask_Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				PRODUCT_BUNDLE_IDENTIFIER = ee.clockwise.gmask;
 				PRODUCT_NAME = "Gas Mask";
@@ -1278,21 +1275,21 @@
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = D5473R5948;
+				DEVELOPMENT_TEAM = Z7GP886B73;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Frameworks\"",
-				);
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-					"@loader_path/../Frameworks",
 				);
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Gas_Mask_Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				PRODUCT_BUNDLE_IDENTIFIER = ee.clockwise.gmask;
 				PRODUCT_NAME = "Gas Mask";

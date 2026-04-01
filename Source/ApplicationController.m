@@ -31,6 +31,7 @@
 #import "EnvStore.h"
 #import "EnvResolver.h"
 #import "EnvExporter.h"
+#import "EnvMaskHostsLikeEditorWindowController.h"
 
 @interface ApplicationController(Private)
 - (void)initStructure;
@@ -111,6 +112,7 @@ static ApplicationController *sharedInstance = nil;
 	}
 	
 	[self showApplicationInDock];
+	[[EnvMaskHostsLikeEditorWindowController defaultInstance] show];
 }
 
 - (IBAction)closeEditorWindow:(id)sender
@@ -328,6 +330,7 @@ BOOL tranformAppToState(ProcessApplicationTransformState newState)
 
 - (void)hideApplicationFromDock
 {
+	[[EnvMaskHostsLikeEditorWindowController defaultInstance] close];
 	tranformAppToState(kProcessTransformToBackgroundApplication);
 	[Preferences setShowEditorWindow:NO];
 	editorWindowOpened = NO;
