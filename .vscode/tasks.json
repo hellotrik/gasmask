@@ -2,6 +2,17 @@
   "version": "2.0.0",
   "tasks": [
     {
+      "id": "build-clean",
+      "label": "Clean",
+      "type": "shell",
+      "icon": {
+        "id": "flame",
+        "tooltip": "xcodebuild clean + 删除 .build 与 dist"
+      },
+      "command": "bash -lc 'set -eu; rm -rf \"${PWD}/.build\" \"${PWD}/dist\"; xcodebuild -project \"Gas Mask.xcodeproj\" -scheme \"Gas Mask\" clean; echo \"已删除 .build、dist，并完成 xcodebuild clean\"'",
+      "problemMatcher": []
+    },
+    {
       "id": "build-compile",
       "label": "编译",
       "type": "shell",

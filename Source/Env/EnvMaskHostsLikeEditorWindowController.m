@@ -24,6 +24,15 @@
 @property (nonatomic) NSTextField *priorityField;
 @property (nonatomic) NSTextField *nameField;
 
+@property (nonatomic) NSView *rightEditorView;
+@property (nonatomic) NSScrollView *opsScrollView;
+@property (nonatomic) NSScrollView *previewScrollView;
+@property (nonatomic) NSButton *createBtn;
+@property (nonatomic) NSButton *removeBtn;
+@property (nonatomic) NSButton *enableBtn;
+@property (nonatomic) NSButton *applyBtn;
+@property (nonatomic) NSButton *saveOpsBtn;
+
 @property (nonatomic) NSArray<EnvLayer *> *layers;
 @property (nonatomic) EnvLayer *selectedLayer;
 @property (nonatomic) BOOL opsTextDirty;
@@ -40,6 +49,11 @@ static EnvMaskHostsLikeEditorWindowController *sharedInstance = nil;
 		sharedInstance = [[EnvMaskHostsLikeEditorWindowController alloc] initWithWindow:nil];
 	}
 	return sharedInstance;
+}
+
+- (void)dealloc
+{
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (NSButton *)buttonWithTitle:(NSString *)title action:(SEL)action
@@ -66,6 +80,93 @@ static EnvMaskHostsLikeEditorWindowController *sharedInstance = nil;
 	return tv;
 }
 
+/// 预览固定高度贴底，变量编辑区填满中间，避免两者同时 HeightSizable 导致重叠、预览盖住 ops 无法点击输入。
+- (void)layoutRightEditorSubviews
+{
+	NSView *right = self.rightEditorView;
+	if (!right) return;
+
+	const CGFloat margin = 12.0;
+	const CGFloat previewHDefault = 160.0;
+	const CGFloat gapPO = 8.0;
+	const CGFloat gapOH = 8.0;
+	const CGFloat gapHT = 12.0;
+	const CGFloat toolbarH = 28.0;
+	const CGFloat headerH = 24.0;
+	const CGFloat topMargin = 8.0;
+	const CGFloat minOpsH = 80.0;
+	const CGFloat minPreviewH = 80.0;
+
+	CGFloat W = NSWidth(right.bounds);
+	CGFloat H = NSHeight(right.bounds);
+	CGFloat innerW = MAX(0.0, W - 2.0 * margin);
+
+	CGFloat topBlock = topMargin + toolbarH + gapHT + headerH + gapOH;
+	CGFloat previewH = previewHDefault;
+	CGFloat bottomBlock = margin + previewH + gapPO;
+	CGFloat opsH = H - topBlock - bottomBlock;
+	if (opsH < minOpsH) {
+		CGFloat shortfall = minOpsH - opsH;
+		previewH = MAX(minPreviewH, previewH - shortfall);
+		bottomBlock = margin + previewH + gapPO;
+		opsH = H - topBlock - bottomBlock;
+	}
+
+	CGFloat toolbarBottomY = H - topMargin - toolbarH;
+	CGFloat headerTopY = toolbarBottomY - gapHT;
+	CGFloat headerBottomY = headerTopY - headerH;
+	CGFloat opsBottomY = margin + previewH + gapPO;
+
+	[self.createBtn setFrame:NSMakeRect(margin, toolbarBottomY, 110, toolbarH)];
+	[self.removeBtn setFrame:NSMakeRect(128, toolbarBottomY, 110, toolbarH)];
+	[self.enableBtn setFrame:NSMakeRect(244, toolbarBottomY, 140, toolbarH)];
+	[self.applyBtn setFrame:NSMakeRect(390, toolbarBottomY, 160, toolbarH)];
+	[self.saveOpsBtn setFrame:NSMakeRect(556, toolbarBottomY, 100, toolbarH)];
+
+	[self.enabledCheckbox setFrame:NSMakeRect(12, headerBottomY, 90, headerH)];
+	[self.priorityField setFrame:NSMakeRect(110, headerBottomY, 70, headerH)];
+	[self.nameField setFrame:NSMakeRect(190, headerBottomY, MAX(80.0, W - margin - 190.0), headerH)];
+
+	[self.previewScrollView setFrame:NSMakeRect(margin, margin, innerW, previewH)];
+	[self.opsScrollView setFrame:NSMakeRect(margin, opsBottomY, innerW, opsH)];
+	[self syncOpsTextViewGeometryToScrollView];
+}
+
+/// 将 ops 文档视图铺满可视区（至少与 clip 同高），否则下方空白不属于 NSTextView，点击无法成为第一响应者、无法输入（含中文 IME）。
+- (void)syncOpsTextViewGeometryToScrollView
+{
+	NSScrollView *sv = self.opsScrollView;
+	NSTextView *tv = self.opsTextView;
+	if (!sv || !tv) return;
+
+	NSSize contentSize = sv.contentSize;
+	if (contentSize.width < 1.0 || contentSize.height < 1.0) return;
+
+	[tv setHorizontallyResizable:NO];
+	[tv setVerticallyResizable:YES];
+	[tv setAutoresizingMask:NSViewWidthSizable];
+
+	NSTextContainer *tc = tv.textContainer;
+	tc.widthTracksTextView = YES;
+	tc.containerSize = NSMakeSize(contentSize.width, CGFLOAT_MAX);
+
+	[tv.layoutManager ensureLayoutForTextContainer:tc];
+	NSRect used = [tv.layoutManager usedRectForTextContainer:tc];
+	CGFloat inset = tv.textContainerInset.height * 2.0;
+	CGFloat usedH = MAX(ceil(NSMaxY(used) + inset), 1.0);
+	CGFloat clipH = contentSize.height;
+	CGFloat docH = MAX(usedH, clipH);
+
+	[tv setMinSize:NSMakeSize(contentSize.width, clipH)];
+	[tv setMaxSize:NSMakeSize(contentSize.width, FLT_MAX)];
+
+	NSRect r = tv.frame;
+	r.origin = NSZeroPoint;
+	r.size.width = contentSize.width;
+	r.size.height = docH;
+	[tv setFrame:r];
+}
+
 - (NSTextView *)newEditableOpsTextView
 {
 	NSTextView *tv = [[NSTextView alloc] initWithFrame:NSMakeRect(0, 0, 100, 100)];
@@ -73,7 +174,8 @@ static EnvMaskHostsLikeEditorWindowController *sharedInstance = nil;
 	[tv setSelectable:YES];
 	[tv setRichText:NO];
 	[tv setFont:[NSFont userFixedPitchFontOfSize:12]];
-	[tv setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
+	[tv setImportsGraphics:NO];
+	[tv setAutoresizingMask:NSViewWidthSizable];
 	[tv setDelegate:self];
 	return tv;
 }
@@ -87,6 +189,7 @@ static EnvMaskHostsLikeEditorWindowController *sharedInstance = nil;
 	}
 	self.opsTextView.string = [EnvOpsTextFormat textFromOps:(self.selectedLayer.ops ?: @[])];
 	self.opsTextDirty = NO;
+	[self syncOpsTextViewGeometryToScrollView];
 }
 
 /// 保存/切层时：若用户在文本框里改过，用文本解析结果，否则用已持久化的 ops。
@@ -246,30 +349,28 @@ static EnvMaskHostsLikeEditorWindowController *sharedInstance = nil;
 	[leftSv setFrame:NSMakeRect(0, 0, 240, 620)];
 	[self.splitView addSubview:leftSv];
 
-	// Right: editor
+	// Right: editor（子视图由 layoutRightEditorSubviews 布局，避免预览与 ops 重叠抢点击）
 	NSView *right = [[NSView alloc] initWithFrame:NSMakeRect(0, 0, 740, 620)];
 	[right setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
+	self.rightEditorView = right;
+	[right setPostsFrameChangedNotifications:YES];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(layoutRightEditorSubviews) name:NSViewFrameDidChangeNotification object:right];
 
 	// Toolbar-like buttons row
-	NSButton *createBtn = [self buttonWithTitle:@"Create(+)" action:@selector(createProfile:)];
-	[createBtn setFrame:NSMakeRect(12, 584, 110, 28)];
-	[right addSubview:createBtn];
+	self.createBtn = [self buttonWithTitle:@"Create(+)" action:@selector(createProfile:)];
+	[right addSubview:self.createBtn];
 
-	NSButton *removeBtn = [self buttonWithTitle:@"Remove" action:@selector(removeSelected:)];
-	[removeBtn setFrame:NSMakeRect(128, 584, 110, 28)];
-	[right addSubview:removeBtn];
+	self.removeBtn = [self buttonWithTitle:@"Remove" action:@selector(removeSelected:)];
+	[right addSubview:self.removeBtn];
 
-	NSButton *enableBtn = [self buttonWithTitle:@"Enable/Disable" action:@selector(toggleEnableSelected:)];
-	[enableBtn setFrame:NSMakeRect(244, 584, 140, 28)];
-	[right addSubview:enableBtn];
+	self.enableBtn = [self buttonWithTitle:@"Enable/Disable" action:@selector(toggleEnableSelected:)];
+	[right addSubview:self.enableBtn];
 
-	NSButton *applyBtn = [self buttonWithTitle:@"ApplyToTerminal" action:@selector(toggleTerminalAutoApply:)];
-	[applyBtn setFrame:NSMakeRect(390, 584, 160, 28)];
-	[right addSubview:applyBtn];
+	self.applyBtn = [self buttonWithTitle:@"ApplyToTerminal" action:@selector(toggleTerminalAutoApply:)];
+	[right addSubview:self.applyBtn];
 
-	NSButton *saveOpsBtn = [self buttonWithTitle:@"保存编辑" action:@selector(saveOpsText:)];
-	[saveOpsBtn setFrame:NSMakeRect(556, 584, 100, 28)];
-	[right addSubview:saveOpsBtn];
+	self.saveOpsBtn = [self buttonWithTitle:@"保存编辑" action:@selector(saveOpsText:)];
+	[right addSubview:self.saveOpsBtn];
 
 	// Header fields
 	self.enabledCheckbox = [[NSButton alloc] initWithFrame:NSMakeRect(12, 548, 90, 24)];
@@ -299,22 +400,20 @@ static EnvMaskHostsLikeEditorWindowController *sharedInstance = nil;
 	[self.nameField setAction:@selector(updateSelectedName:)];
 	[right addSubview:self.nameField];
 
-	// 变量区：纯文本（类 hosts），一行一条
-	self.opsTextView = [self newEditableOpsTextView];
-	NSScrollView *opsSv = [self scrollViewWithView:self.opsTextView];
-	[opsSv setFrame:NSMakeRect(12, 180, 716, 360)];
-	[opsSv setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
-	[opsSv setBorderType:NSBezelBorder];
-	[right addSubview:opsSv];
-
-	// Preview
+	// Preview 先加、变量编辑后加，保证 ops 在上层（即使曾重叠也能点到）
 	self.previewText = [self newReadonlyTextView];
-	NSScrollView *prevSv = [self scrollViewWithView:self.previewText];
-	[prevSv setFrame:NSMakeRect(12, 12, 716, 160)];
-	[prevSv setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
-	[right addSubview:prevSv];
+	self.previewScrollView = [self scrollViewWithView:self.previewText];
+	[self.previewScrollView setBorderType:NSBezelBorder];
+	[right addSubview:self.previewScrollView];
+
+	self.opsTextView = [self newEditableOpsTextView];
+	self.opsScrollView = [self scrollViewWithView:self.opsTextView];
+	[self.opsScrollView setBorderType:NSBezelBorder];
+	[right addSubview:self.opsScrollView];
 
 	[self.splitView addSubview:right];
+
+	[self layoutRightEditorSubviews];
 
 	[self reloadFromStore];
 	[self.sourceList expandItem:nil expandChildren:YES];
@@ -392,6 +491,7 @@ static EnvMaskHostsLikeEditorWindowController *sharedInstance = nil;
 {
 	if (notification.object == self.opsTextView) {
 		self.opsTextDirty = YES;
+		[self syncOpsTextViewGeometryToScrollView];
 	}
 }
 
