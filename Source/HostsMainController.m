@@ -27,6 +27,7 @@
 #import "Hosts.h"
 #import "HostsGroup.h"
 #import "Preferences.h"
+#import "Logger.h"
 
 @interface HostsMainController (Private)
 
@@ -107,7 +108,7 @@ static HostsMainController *sharedInstance = nil;
 	}
 	
 	[self updateFilesCount];
-	logInfo(@"All hosts files are loaded");
+	[Logger info:@"All hosts files are loaded" method:__PRETTY_FUNCTION__];
     [[NSNotificationCenter defaultCenter] postNotificationName:ActivateFileNotification object:NULL];
 }
 
@@ -116,7 +117,7 @@ static HostsMainController *sharedInstance = nil;
 
 - (IBAction)createNewHostsFile:(id)sender
 {
-	logDebug(@"Creating new hosts file");
+	[Logger debug:@"Creating new hosts file" method:__PRETTY_FUNCTION__];
 	
 	for (int i=0; i<[controllers count]; i++) {
 		NSObject<HostsControllerProtocol> *controller = [controllers objectAtIndex:i];
@@ -126,7 +127,7 @@ static HostsMainController *sharedInstance = nil;
 		if (hosts != nil) {
 			[self addHostsFile:hosts forController:controller];
 			
-			logDebug(@"Renaming created hosts file");
+			[Logger debug:@"Renaming created hosts file" method:__PRETTY_FUNCTION__];
 			NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
 			[nc postNotificationName:HostsFileShouldBeRenamedNotification object:hosts];
             [nc postNotificationName:HostsFileCreatedNotification object:hosts];
@@ -140,7 +141,7 @@ static HostsMainController *sharedInstance = nil;
 
 - (IBAction)createCombinedHostsFile:(id)sender
 {
-    logDebug(@"Creating combined hosts file");
+    [Logger debug:@"Creating combined hosts file" method:__PRETTY_FUNCTION__];
     
     NSObject<HostsControllerProtocol> *controller = [self hostsControllerForControllerClass:[CombinedHostsController class]];
     Hosts *hosts = [controller createNewHostsFile];
@@ -173,25 +174,25 @@ static HostsMainController *sharedInstance = nil;
 
 - (BOOL)createHostsFromURL:(NSURL*)url toGroup:(HostsGroup*)group
 {	
-	logDebug(@"Creating hosts from URL to group: %@", group);
+	[Logger debug:[NSString stringWithFormat:@"Creating hosts from URL to group: %@", group] method:__PRETTY_FUNCTION__];
 	return [self createHostsFromURL:url forController:[self hostsControllerForHostsGroup:group]];
 }
 
 - (BOOL)createHostsFromURL:(NSURL*)url forControllerClass:(Class)controllerClass
 {
-	logDebug(@"Creating hosts from URL for controller: %@", controllerClass);
+	[Logger debug:[NSString stringWithFormat:@"Creating hosts from URL for controller: %@", controllerClass] method:__PRETTY_FUNCTION__];
 	return [self createHostsFromURL:url forController:[self hostsControllerForControllerClass:controllerClass]];
 }
 
 - (BOOL)createHostsFromLocalURL:(NSURL*)url toGroup:(HostsGroup*)group
 {
-	logDebug(@"Creating hosts from local URL to group: %@", group);
+	[Logger debug:[NSString stringWithFormat:@"Creating hosts from local URL to group: %@", group] method:__PRETTY_FUNCTION__];
 	return [self createHostsFromLocalURL:url forController:[self hostsControllerForHostsGroup:group]];
 }
 
 - (BOOL)createHostsFromLocalURL:(NSURL*)url forControllerClass:(Class)controllerClass
 {
-	logDebug(@"Creating hosts from local for controller: %@", controllerClass);
+	[Logger debug:[NSString stringWithFormat:@"Creating hosts from local for controller: %@", controllerClass] method:__PRETTY_FUNCTION__];
 	return [self createHostsFromLocalURL:url forController:[self hostsControllerForControllerClass:controllerClass]];
 }
 
@@ -202,14 +203,14 @@ static HostsMainController *sharedInstance = nil;
 	BOOL renameSuccessful = [controller rename:hosts to:name];
 	
 	if (!renameSuccessful) {
-		logDebug(@"Failed to rename");
+		[Logger debug:@"Failed to rename" method:__PRETTY_FUNCTION__];
 		return NO;
 	}
 	
-	logDebug(@"Renamed hosts file to: \"%@\"", [hosts name]);
+	[Logger debug:[NSString stringWithFormat:@"Renamed hosts file to: \"%@\"", [hosts name]] method:__PRETTY_FUNCTION__];
 	
 	if ([hosts isEqual:[self activeHostsFile]]) {
-		logDebug(@"Changing active hosts path to: \"%@\"", [hosts path]);
+		[Logger debug:[NSString stringWithFormat:@"Changing active hosts path to: \"%@\"", [hosts path]] method:__PRETTY_FUNCTION__];
 		[Preferences setActiveHostsFile:[hosts path]];
 	}
 	
@@ -220,7 +221,7 @@ static HostsMainController *sharedInstance = nil;
 
 -(IBAction)saveSelected:(id)sender
 {
-	logDebug(@"Saving selected hosts file");
+	[Logger debug:@"Saving selected hosts file" method:__PRETTY_FUNCTION__];
 	Hosts *hosts = [self selectedHosts];
 	[self saveHosts:hosts];
 }

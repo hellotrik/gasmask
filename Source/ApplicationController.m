@@ -27,6 +27,7 @@
 #import "LocalHostsController.h"
 #import "RemoteHostsController.h"
 #import "NotificationHelper.h"
+#import "Logger.h"
 #import "EnvMaskController.h"
 #import "EnvStore.h"
 #import "EnvResolver.h"

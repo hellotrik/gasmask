@@ -38,6 +38,7 @@
 @interface ListController (Private)
 - (void)selectActiveHostsFile;
 - (void)expandAllItems;
+- (void)reloadAndExpandBy通知;
 - (void)showEditError:(NSString*)message;
 - (NSString*)urlFromPasteBoard:(NSPasteboard*)pasteboard;
 - (BOOL)allowToDropTo:(Hosts*)target;
@@ -70,6 +71,7 @@ static ListController *sharedInstance = nil;
 		[nc addObserver:self selector:@selector(selectHostsFile:) name:HostsFileShouldBeSelectedNotification object:nil];
 		[nc addObserver:self selector:@selector(deleteDraggedHostsFile:) name:DraggedFileShouldBeRemovedNotification object:nil];
 		[nc addObserver:self selector:@selector(handleHostsFileRemoval:) name:HostsFileWillBeRemovedNotification object:nil];
+        [nc addObserver:self selector:@selector(reloadAndExpandBy通知) name:ActivateFileNotification object:nil];
 		
 		sharedInstance = self;
 	}
@@ -80,6 +82,13 @@ static ListController *sharedInstance = nil;
 {	
 	[self expandAllItems];
 	[self selectActiveHostsFile];
+    
+    if (list && hostsController && [list numberOfRows] == 0 && [hostsController filesCount] == 0) {
+        [hostsController load];
+        [list reloadData];
+        [self expandAllItems];
+        [self selectActiveHostsFile];
+    }
 }
 
 - (void)updateItem:(NSNotification *)notification
@@ -96,6 +105,15 @@ static ListController *sharedInstance = nil;
 @end
 
 @implementation ListController (Private)
+
+- (void)reloadAndExpandBy通知
+{
+    if (list) {
+        [list reloadData];
+        [self expandAllItems];
+        [self selectActiveHostsFile];
+    }
+}
 
 - (void)selectActiveHostsFile
 {

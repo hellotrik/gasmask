@@ -59,15 +59,16 @@
 - (void)loadFiles
 {
 	logDebug(@"Loading local hosts");
+    NSString *dir = [FileUtil localHostFilesDirectory];
 	
 	NSString *activeHostsFilePath = [Preferences activeHostsFile];
 	
-	NSDirectoryEnumerator *enumerator  = [[NSFileManager defaultManager] enumeratorAtPath:  [FileUtil localHostFilesDirectory]];
+	NSDirectoryEnumerator *enumerator  = [[NSFileManager defaultManager] enumeratorAtPath: dir];
 	NSString *file;
 	while (file = [enumerator nextObject]) {
 		if ([[file pathExtension] isEqualTo:HostsFileExtension]) {
 			
-			Hosts *hosts = [[Hosts alloc] initWithPath: [[FileUtil localHostFilesDirectory] stringByAppendingString:file]];
+			Hosts *hosts = [[Hosts alloc] initWithPath: [dir stringByAppendingString:file]];
 			
 			logDebug(@"Loaded file: \"%@\"", file);
 			
