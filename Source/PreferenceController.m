@@ -229,6 +229,11 @@
 
 - (void)initHotkeys
 {
+	if (activatePreviousHotkey == nil || ![activatePreviousHotkey respondsToSelector:@selector(setKeyCombo:)]) {
+		logDebug(@"ShortcutRecorder unavailable; skipping hotkey prefs binding");
+		return;
+	}
+
 	id plist = [[[Preferences instance] defaults] valueForKey:ActivatePreviousFilePrefKey];
 	Hotkey *hotkey = [[Hotkey alloc] initWithPlistRepresentation:plist];
 	[activatePreviousHotkey setKeyCombo:SRMakeKeyCombo([hotkey keyCode], [activatePreviousHotkey carbonToCocoaFlags:[hotkey modifiers]])];

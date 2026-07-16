@@ -1,3 +1,13 @@
+/**
+ * 古月方源·大爱仙尊｜卷土重来
+ *
+ * 千古地仙随风逝，昔日三王归青冢。
+ * 阳莽憾陨谁无败？卷土重来再称王。
+ * 天河一挂淘龙鱼，逆天独行顾八荒。
+ * 今日暂且展翼去，明朝登仙笞凤凰！
+ *
+ * @remarks 来源：蛊真人 · 《蛊真人》全诗词整理（完整版） · kairos-dao-header
+ */
 /***************************************************************************
  *   Copyright (C) 2009-2010 by Clockwise   *
  *   copyright@clockwise.ee   *
@@ -31,6 +41,7 @@
 	int busyThreads;
 	BOOL shouldQuit;
 	BOOL editorWindowOpened;
+	NSArray *editorNibTopLevelObjects;
 	PreferenceController *preferenceController;
     AboutBoxController *aboutBoxController;
 }

@@ -22,6 +22,7 @@
 		35116A8510D6ABA000A5FAA1 /* menuIcon.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 35116A8410D6ABA000A5FAA1 /* menuIcon.tiff */; };
 		35116AA010D6ADF000A5FAA1 /* Preferences.xib in Resources */ = {isa = PBXBuildFile; fileRef = 35116A9F10D6ADF000A5FAA1 /* Preferences.xib */; };
 		35116AAD10D6AE5600A5FAA1 /* PreferenceController.m in Sources */ = {isa = PBXBuildFile; fileRef = 35116AAC10D6AE5600A5FAA1 /* PreferenceController.m */; };
+		13728D4BF858426395D37B9F /* ShortcutRecorderArm64Stub.m in Sources */ = {isa = PBXBuildFile; fileRef = E947A6C901FB449B893EBDAC /* ShortcutRecorderArm64Stub.m */; };
 		35116AC010D6AF0500A5FAA1 /* LoginItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 35116ABF10D6AF0500A5FAA1 /* LoginItem.m */; };
 		35116ADA10D6B00200A5FAA1 /* Hotkey.m in Sources */ = {isa = PBXBuildFile; fileRef = 35116AD910D6B00200A5FAA1 /* Hotkey.m */; };
 		3513A600113908A900AD789D /* Read Only.png in Resources */ = {isa = PBXBuildFile; fileRef = 3513A5FF113908A900AD789D /* Read Only.png */; };
@@ -196,6 +197,7 @@
 		35116A9F10D6ADF000A5FAA1 /* Preferences.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = Preferences.xib; sourceTree = "<group>"; };
 		35116AAB10D6AE5600A5FAA1 /* PreferenceController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PreferenceController.h; path = Source/PreferenceController.h; sourceTree = "<group>"; };
 		35116AAC10D6AE5600A5FAA1 /* PreferenceController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PreferenceController.m; path = Source/PreferenceController.m; sourceTree = "<group>"; };
+		E947A6C901FB449B893EBDAC /* ShortcutRecorderArm64Stub.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ShortcutRecorderArm64Stub.m; path = Source/ShortcutRecorderArm64Stub.m; sourceTree = "<group>"; };
 		35116ABE10D6AF0500A5FAA1 /* LoginItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LoginItem.h; path = Source/LoginItem.h; sourceTree = "<group>"; };
 		35116ABF10D6AF0500A5FAA1 /* LoginItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LoginItem.m; path = Source/LoginItem.m; sourceTree = "<group>"; };
 		35116AD810D6B00200A5FAA1 /* Hotkey.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Hotkey.h; path = Source/Hotkey.h; sourceTree = "<group>"; };
@@ -1021,6 +1023,7 @@
 				3511697810D68B1000A5FAA1 /* FilesCountTransformer.m in Sources */,
 				35116A7010D6AAD200A5FAA1 /* Menulet.m in Sources */,
 				35116AAD10D6AE5600A5FAA1 /* PreferenceController.m in Sources */,
+				13728D4BF858426395D37B9F /* ShortcutRecorderArm64Stub.m in Sources */,
 				35116AC010D6AF0500A5FAA1 /* LoginItem.m in Sources */,
 				35116ADA10D6B00200A5FAA1 /* Hotkey.m in Sources */,
 				3556CEF910D6B70100C7301E /* UpdateDateTransformer.m in Sources */,

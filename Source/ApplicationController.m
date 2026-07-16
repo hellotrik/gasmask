@@ -35,6 +35,7 @@
 - (void)showApplicationInDock;
 - (void)hideApplicationFromDock;
 - (void)createHostsFileFromLocalURL:(NSURL*)url;
+- (void)orderEditorWindowFront;
 @end
 
 @implementation ApplicationController
@@ -69,12 +70,21 @@ static ApplicationController *sharedInstance = nil;
 
 -(IBAction)openPreferencesWindow:(id)sender
 {
+	logDebug(@"Opening preferences window");
 	if (!preferenceController) {
 		preferenceController = [[PreferenceController alloc] init];
 	}
 	
     [self showApplicationInDock];
 	[preferenceController showWindow:self];
+	NSWindow *prefsWindow = [preferenceController window];
+	if (prefsWindow) {
+		[prefsWindow center];
+		[prefsWindow makeKeyAndOrderFront:nil];
+		logDebug(@"Preferences window shown: %@", [prefsWindow title]);
+	} else {
+		logDebug(@"Preferences window failed to load");
+	}
 }
 
 - (IBAction)displayAboutBox:(id)sender
@@ -102,11 +112,13 @@ static ApplicationController *sharedInstance = nil;
 
 - (IBAction)openEditorWindow:(id)sender
 {
-	if (!editorWindowOpened) {
+	[self showApplicationInDock];
+	if (editorNibTopLevelObjects == nil) {
 		[self initEditorWindow];
 	}
-	
-	[self showApplicationInDock];
+	editorWindowOpened = YES;
+	[self orderEditorWindowFront];
+	[Preferences setShowEditorWindow:YES];
 }
 
 - (IBAction)closeEditorWindow:(id)sender
@@ -262,7 +274,22 @@ static ApplicationController *sharedInstance = nil;
 - (void)initEditorWindow
 {
     logDebug(@"Initializing editor window");
-	[NSBundle loadNibNamed:@"Editor" owner:self];
+	NSArray *topLevelObjects = nil;
+	if (![[NSBundle mainBundle] loadNibNamed:@"Editor" owner:self topLevelObjects:&topLevelObjects]) {
+		logDebug(@"Failed to load Editor.nib");
+		return;
+	}
+	editorNibTopLevelObjects = [topLevelObjects copy];
+	logDebug(@"Editor nib top-level objects: %lu", (unsigned long)[editorNibTopLevelObjects count]);
+	for (id obj in editorNibTopLevelObjects) {
+		if ([obj isKindOfClass:[NSWindow class]]) {
+			NSWindow *window = (NSWindow *)obj;
+			[window setReleasedWhenClosed:NO];
+			[window setIsVisible:YES];
+			[window makeKeyAndOrderFront:nil];
+			logDebug(@"Editor window shown: title=%@ autosave=%@", [window title], [window frameAutosaveName]);
+		}
+	}
 	editorWindowOpened = YES;
 }
 
@@ -289,44 +316,35 @@ static ApplicationController *sharedInstance = nil;
     [NotificationHelper notify:@"Hosts File Activated" message:[hosts name]];
 }
 
-BOOL tranformAppToState(ProcessApplicationTransformState newState)
-{
-	ProcessSerialNumber psn = { 0, kCurrentProcess };
-	OSStatus transformStatus = TransformProcessType(&psn, newState);
-	if((transformStatus != 0))
-	{
-		NSError *error = [NSError errorWithDomain:NSOSStatusErrorDomain code:transformStatus userInfo:nil];
-		NSLog(@"TranformAppToState: Unable to transform App state. Error - %@",error);
-	}
-
-	return (transformStatus == 0);
-}
-
 - (void)showApplicationInDock
 {
-	BOOL bSuccess = tranformAppToState(kProcessTransformToForegroundApplication);
-	if(bSuccess)
-	{
-		[NSApp activateIgnoringOtherApps:YES];
-		ProcessSerialNumber psnx = {0, kNoProcess};
-		GetNextProcess(&psnx);
-		SetFrontProcess(&psnx);
-		[self performSelector:@selector(setFront) withObject:nil afterDelay:0.5];
-	}
-
+	// LSUIElement apps: TransformProcessType often fails (-50) on modern macOS;
+	// old code only activated on success, so menu items looked dead.
+	[NSApp setActivationPolicy:NSApplicationActivationPolicyRegular];
+	[NSApp activateIgnoringOtherApps:YES];
 }
 
 - (void)hideApplicationFromDock
 {
-	tranformAppToState(kProcessTransformToBackgroundApplication);
+	for (NSWindow *window in [NSApp windows]) {
+		if ([[window frameAutosaveName] isEqualToString:@"editor_window"] ||
+			[[window title] isEqualToString:@"Gas Mask"]) {
+			[window orderOut:nil];
+		}
+	}
+	[NSApp setActivationPolicy:NSApplicationActivationPolicyAccessory];
 	[Preferences setShowEditorWindow:NO];
 	editorWindowOpened = NO;
 }
 
-- (void)setFront
+- (void)orderEditorWindowFront
 {
-	ProcessSerialNumber psn = {0, kCurrentProcess};
-	SetFrontProcess(&psn);	
+	for (NSWindow *window in [NSApp windows]) {
+		if ([[window frameAutosaveName] isEqualToString:@"editor_window"] ||
+			[[window title] isEqualToString:@"Gas Mask"]) {
+			[window makeKeyAndOrderFront:nil];
+		}
+	}
 }
 
 - (void)createHostsFileFromLocalURL:(NSURL*)url
