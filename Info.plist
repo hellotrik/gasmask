@@ -89,14 +89,6 @@
 			</array>
 		</dict>
 	</array>
-	<key>SUEnableAutomaticChecks</key>
-	<string>YES</string>
-	<key>SUFeedURL</key>
-	<string>http://gmask.clockwise.ee/check_update/</string>
-	<key>SUPublicDSAKeyFile</key>
-	<string>sparkle_dsa_pub.pem</string>
-	<key>SUScheduledCheckInterval</key>
-	<string>86400</string>
 	<key>UTExportedTypeDeclarations</key>
 	<array>
 		<dict>

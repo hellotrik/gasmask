@@ -31,7 +31,6 @@
 #define TOOLBAR_EDITOR @"TOOLBAR_EDITOR"
 #define TOOLBAR_REMOTE @"TOOLBAR_REMOTE"
 #define TOOLBAR_HOTKEYS @"TOOLBAR_HOTKEYS"
-#define TOOLBAR_UPDATE @"TOOLBAR_UPDATE"
 
 @interface PreferenceController (Remote)
 - (void)initRemote;
@@ -95,7 +94,6 @@
 									  TOOLBAR_EDITOR,
 									  TOOLBAR_REMOTE,
 									  TOOLBAR_HOTKEYS,
-									  TOOLBAR_UPDATE,
 									  nil];
 }
 
@@ -119,10 +117,6 @@
 		[item setLabel: @"Hotkeys"];
 		[item setImage: [NSImage imageNamed: @"Hotkeys.png"]];
 	}
-	else if ([ident isEqualTo:TOOLBAR_UPDATE]) {
-		[item setLabel: @"Update"];
-		[item setImage: [NSImage imageNamed: @"Update.png"]];
-	}
 	[item setTarget: self];
 	[item setAction: @selector(setPreferenceView:)];
 	[item setAutovalidates: NO];
@@ -142,9 +136,6 @@
 	}
 	else if ([identifier isEqualToString:TOOLBAR_HOTKEYS]) {
 		view = hotkeysView;
-	}
-	else if ([identifier isEqualToString:TOOLBAR_UPDATE]) {
-		view = updateView;
 	}
 	
 	NSWindow * window = [self window];

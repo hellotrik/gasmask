@@ -23,7 +23,7 @@
 
 @interface PreferenceController : NSWindowController<NSToolbarDelegate> {
 	@private
-	IBOutlet NSView *generalView, *editorView, *hotkeysView, *updateView, *remoteView;
+	IBOutlet NSView *generalView, *editorView, *hotkeysView, *remoteView;
     LoginItem *loginItem;
 	
     __unsafe_unretained IBOutlet NSButton *showHostFileNameButton;

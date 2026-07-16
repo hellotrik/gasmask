@@ -27,7 +27,6 @@
 		35116ADA10D6B00200A5FAA1 /* Hotkey.m in Sources */ = {isa = PBXBuildFile; fileRef = 35116AD910D6B00200A5FAA1 /* Hotkey.m */; };
 		3513A600113908A900AD789D /* Read Only.png in Resources */ = {isa = PBXBuildFile; fileRef = 3513A5FF113908A900AD789D /* Read Only.png */; };
 		3513A61C11390B7900AD789D /* Error.m in Sources */ = {isa = PBXBuildFile; fileRef = 3513A61B11390B7900AD789D /* Error.m */; };
-		351416CF28C3A7B80093A452 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 351416CE28C3A7B80093A452 /* Sparkle */; };
 		3516864B11187EDE00314609 /* HostsTextController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3516864A11187EDE00314609 /* HostsTextController.m */; };
 		351D904510E76F7100CA6B5E /* Help in Resources */ = {isa = PBXBuildFile; fileRef = 351D904110E76F7100CA6B5E /* Help */; };
 		3522BEE0153316AA00035B90 /* ExtendedNSArray.m in Sources */ = {isa = PBXBuildFile; fileRef = 3522BEDF153316AA00035B90 /* ExtendedNSArray.m */; };
@@ -79,7 +78,6 @@
 		354E80B510AF383C00FC4757 /* FileUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 354E80B410AF383C00FC4757 /* FileUtil.m */; };
 		3556CE8410D6B3CF00C7301E /* ShortcutRecorder.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3556CE8310D6B3CF00C7301E /* ShortcutRecorder.framework */; };
 		3556CEA110D6B44A00C7301E /* ShortcutRecorder.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 3556CE8310D6B3CF00C7301E /* ShortcutRecorder.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
-		3556CEF910D6B70100C7301E /* UpdateDateTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = 3556CEF810D6B70100C7301E /* UpdateDateTransformer.m */; };
 		355F5C5B12244B67006C2884 /* LocalHostsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 355F5C5A12244B67006C2884 /* LocalHostsController.m */; };
 		355F5CA512244F28006C2884 /* RemoteHostsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 355F5CA412244F28006C2884 /* RemoteHostsController.m */; };
 		355F5CDF122452BE006C2884 /* AbstractHostsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 355F5CDE122452BE006C2884 /* AbstractHostsController.m */; };
@@ -115,7 +113,6 @@
 		35B049921A46234100EB89CA /* Editor.png in Resources */ = {isa = PBXBuildFile; fileRef = 35B0498E1A46234100EB89CA /* Editor.png */; };
 		35B049931A46234100EB89CA /* Hotkeys.png in Resources */ = {isa = PBXBuildFile; fileRef = 35B0498F1A46234100EB89CA /* Hotkeys.png */; };
 		35B049941A46234100EB89CA /* Remote.png in Resources */ = {isa = PBXBuildFile; fileRef = 35B049901A46234100EB89CA /* Remote.png */; };
-		35B049951A46234100EB89CA /* Update.png in Resources */ = {isa = PBXBuildFile; fileRef = 35B049911A46234100EB89CA /* Update.png */; };
 		35B0499B1A462AE900EB89CA /* Activated@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 35B0499A1A462AE900EB89CA /* Activated@2x.png */; };
 		35B0499D1A462BC500EB89CA /* Blue Dot@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 35B0499C1A462BC500EB89CA /* Blue Dot@2x.png */; };
 		35B36A641263B25A005F6A66 /* DebugUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 35B36A631263B25A005F6A66 /* DebugUtil.m */; };
@@ -128,7 +125,6 @@
 		35D4CB0D10E651CD00B9F63A /* About Box Image.png in Resources */ = {isa = PBXBuildFile; fileRef = 35D4CB0C10E651CD00B9F63A /* About Box Image.png */; };
 		35D4CBFB10E6934700B9F63A /* ExtendedNSTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 35D4CBFA10E6934700B9F63A /* ExtendedNSTextView.m */; };
 		35D83BEF20DD97CF00169358 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 35D83BEE20DD97CF00169358 /* Assets.xcassets */; };
-		35DA4DF6123BF4F30043CA87 /* sparkle_dsa_pub.pem in Resources */ = {isa = PBXBuildFile; fileRef = 35DA4DF5123BF4F30043CA87 /* sparkle_dsa_pub.pem */; };
 		35E32D841211D52F00B2C631 /* OfflineBadge.m in Sources */ = {isa = PBXBuildFile; fileRef = 35E32D831211D52F00B2C631 /* OfflineBadge.m */; };
 		35E32EDC12145CF900B2C631 /* Logger.m in Sources */ = {isa = PBXBuildFile; fileRef = 35E32EDB12145CF900B2C631 /* Logger.m */; };
 		35E33075121490B100B2C631 /* ExtendedNSThread.m in Sources */ = {isa = PBXBuildFile; fileRef = 35E33074121490B100B2C631 /* ExtendedNSThread.m */; };
@@ -278,9 +274,6 @@
 		354E80B310AF383C00FC4757 /* FileUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FileUtil.h; path = Source/FileUtil.h; sourceTree = "<group>"; };
 		354E80B410AF383C00FC4757 /* FileUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FileUtil.m; path = Source/FileUtil.m; sourceTree = "<group>"; };
 		3556CE8310D6B3CF00C7301E /* ShortcutRecorder.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ShortcutRecorder.framework; path = Frameworks/ShortcutRecorder.framework; sourceTree = "<group>"; };
-		3556CEDF10D6B68C00C7301E /* Sparkle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Sparkle.framework; path = Frameworks/Sparkle.framework; sourceTree = "<group>"; };
-		3556CEF710D6B70100C7301E /* UpdateDateTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UpdateDateTransformer.h; path = Source/UpdateDateTransformer.h; sourceTree = "<group>"; };
-		3556CEF810D6B70100C7301E /* UpdateDateTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UpdateDateTransformer.m; path = Source/UpdateDateTransformer.m; sourceTree = "<group>"; };
 		355F5C5912244B67006C2884 /* LocalHostsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LocalHostsController.h; path = Source/LocalHostsController.h; sourceTree = "<group>"; };
 		355F5C5A12244B67006C2884 /* LocalHostsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LocalHostsController.m; path = Source/LocalHostsController.m; sourceTree = "<group>"; };
 		355F5CA312244F28006C2884 /* RemoteHostsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RemoteHostsController.h; path = Source/RemoteHostsController.h; sourceTree = "<group>"; };
@@ -329,7 +322,6 @@
 		35B0498E1A46234100EB89CA /* Editor.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Editor.png; path = Resources/Images/Preferences/Editor.png; sourceTree = "<group>"; };
 		35B0498F1A46234100EB89CA /* Hotkeys.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Hotkeys.png; path = Resources/Images/Preferences/Hotkeys.png; sourceTree = "<group>"; };
 		35B049901A46234100EB89CA /* Remote.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Remote.png; path = Resources/Images/Preferences/Remote.png; sourceTree = "<group>"; };
-		35B049911A46234100EB89CA /* Update.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Update.png; path = Resources/Images/Preferences/Update.png; sourceTree = "<group>"; };
 		35B0499A1A462AE900EB89CA /* Activated@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Activated@2x.png"; path = "Resources/Images/Activated@2x.png"; sourceTree = "<group>"; };
 		35B0499C1A462BC500EB89CA /* Blue Dot@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Blue Dot@2x.png"; path = "Resources/Images/Blue Dot@2x.png"; sourceTree = "<group>"; };
 		35B36A621263B25A005F6A66 /* DebugUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DebugUtil.h; path = Source/DebugUtil.h; sourceTree = "<group>"; };
@@ -349,7 +341,6 @@
 		35D4CBF910E6934700B9F63A /* ExtendedNSTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ExtendedNSTextView.h; path = Source/ExtendedNSTextView.h; sourceTree = "<group>"; };
 		35D4CBFA10E6934700B9F63A /* ExtendedNSTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ExtendedNSTextView.m; path = Source/ExtendedNSTextView.m; sourceTree = "<group>"; };
 		35D83BEE20DD97CF00169358 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		35DA4DF5123BF4F30043CA87 /* sparkle_dsa_pub.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = sparkle_dsa_pub.pem; path = Resources/sparkle_dsa_pub.pem; sourceTree = "<group>"; };
 		35E32D821211D52F00B2C631 /* OfflineBadge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OfflineBadge.h; path = Source/OfflineBadge.h; sourceTree = "<group>"; };
 		35E32D831211D52F00B2C631 /* OfflineBadge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OfflineBadge.m; path = Source/OfflineBadge.m; sourceTree = "<group>"; };
 		35E32EDA12145CF900B2C631 /* Logger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Logger.h; path = Source/Logger.h; sourceTree = "<group>"; };
@@ -382,7 +373,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				351416CF28C3A7B80093A452 /* Sparkle in Frameworks */,
 				3556CE8410D6B3CF00C7301E /* ShortcutRecorder.framework in Frameworks */,
 				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
 				354E7F8110AEFBC500FC4757 /* Security.framework in Frameworks */,
@@ -415,7 +405,6 @@
 				354DDD08114EBC8000DB76D7 /* CrashReportSender.framework */,
 				35C8D5A811144F7000B4242D /* Carbon.framework */,
 				3545DCE310E3997200EBA66D /* SystemConfiguration.framework */,
-				3556CEDF10D6B68C00C7301E /* Sparkle.framework */,
 				3556CE8310D6B3CF00C7301E /* ShortcutRecorder.framework */,
 				354E7F8010AEFBC500FC4757 /* Security.framework */,
 				1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */,
@@ -481,7 +470,6 @@
 			isa = PBXGroup;
 			children = (
 				35D83BEE20DD97CF00169358 /* Assets.xcassets */,
-				35DA4DF5123BF4F30043CA87 /* sparkle_dsa_pub.pem */,
 				354C0BC410E782A5005B9A33 /* hosts.icns */,
 				351D904110E76F7100CA6B5E /* Help */,
 				3545DC8E10E38F1800EBA66D /* Images */,
@@ -688,8 +676,6 @@
 			isa = PBXGroup;
 			children = (
 				35116A9F10D6ADF000A5FAA1 /* Preferences.xib */,
-				3556CEF710D6B70100C7301E /* UpdateDateTransformer.h */,
-				3556CEF810D6B70100C7301E /* UpdateDateTransformer.m */,
 			);
 			name = GUI;
 			sourceTree = "<group>";
@@ -760,7 +746,6 @@
 				35B0498E1A46234100EB89CA /* Editor.png */,
 				35B0498F1A46234100EB89CA /* Hotkeys.png */,
 				35B049901A46234100EB89CA /* Remote.png */,
-				35B049911A46234100EB89CA /* Update.png */,
 			);
 			name = Preferences;
 			sourceTree = "<group>";
@@ -870,9 +855,6 @@
 				353D18A11114C067005C4E54 /* PBXTargetDependency */,
 			);
 			name = "Gas Mask";
-			packageProductDependencies = (
-				351416CE28C3A7B80093A452 /* Sparkle */,
-			);
 			productInstallPath = "$(HOME)/Applications";
 			productName = "Gas Mask";
 			productReference = 8D1107320486CEB800E47090 /* Gas Mask.app */;
@@ -906,9 +888,6 @@
 				en,
 			);
 			mainGroup = 29B97314FDCFA39411CA2CEA /* Gas Mask */;
-			packageReferences = (
-				351416CD28C3A7B80093A452 /* XCRemoteSwiftPackageReference "Sparkle" */,
-			);
 			productRefGroup = 19C28FACFE9D520D11CA2CBB /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -980,11 +959,9 @@
 				3530F93E113598A800E591BA /* Alert.png in Resources */,
 				3513A600113908A900AD789D /* Read Only.png in Resources */,
 				35498EDB12187F5D00E46952 /* Offline_rollover.png in Resources */,
-				35DA4DF6123BF4F30043CA87 /* sparkle_dsa_pub.pem in Resources */,
 				35A4CD301534927F005176BD /* Combined Hosts Hint.png in Resources */,
 				359289AB1659222E00492494 /* CHANGELOG.txt in Resources */,
 				358E0A841A3A1C54004521D1 /* Local File yosemite.tiff in Resources */,
-				35B049951A46234100EB89CA /* Update.png in Resources */,
 				358C36E61A0D6F2E00161C98 /* Combined_File.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1026,7 +1003,6 @@
 				13728D4BF858426395D37B9F /* ShortcutRecorderArm64Stub.m in Sources */,
 				35116AC010D6AF0500A5FAA1 /* LoginItem.m in Sources */,
 				35116ADA10D6B00200A5FAA1 /* Hotkey.m in Sources */,
-				3556CEF910D6B70100C7301E /* UpdateDateTransformer.m in Sources */,
 				358448B310DFE283002E6A9B /* Util.m in Sources */,
 				3545DCA910E396CF00EBA66D /* Network.m in Sources */,
 				3541CE0510E4AF9B00FA00CB /* SyncingArrowsBadge.m in Sources */,
@@ -1329,24 +1305,6 @@
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCRemoteSwiftPackageReference section */
-		351416CD28C3A7B80093A452 /* XCRemoteSwiftPackageReference "Sparkle" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/sparkle-project/Sparkle.git";
-			requirement = {
-				kind = exactVersion;
-				version = 1.27.1;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		351416CE28C3A7B80093A452 /* Sparkle */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 351416CD28C3A7B80093A452 /* XCRemoteSwiftPackageReference "Sparkle" */;
-			productName = Sparkle;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 29B97313FDCFA39411CA2CEA /* Project object */;
 }
