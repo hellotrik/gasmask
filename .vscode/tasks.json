@@ -32,7 +32,7 @@
         "id": "trash",
         "tooltip": "清理"
       },
-      "command": "bash -lc 'set -eu; rm -rf \"${PWD}/.build\" \"${PWD}/dist\"; echo \"已清理: .build dist\"'",
+      "command": "bash -lc 'set -eu; for d in \"${PWD}/.build\" \"${PWD}/dist\"; do [ -e \"$d\" ] || continue; chmod -R u+w \"$d\" 2>/dev/null || true; find \"$d\" -mindepth 1 -delete; rmdir \"$d\" 2>/dev/null || rm -rf \"$d\"; done; echo \"已清理: .build dist\"'",
       "problemMatcher": []
     }
   ]
